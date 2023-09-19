@@ -4,7 +4,8 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { PbsController } from './pbs.controller';
 import { PbsValidation } from './pbs.validation';
-const { SUPER_ADMIN, ADMIN, USER } = ENUM_USER_ROLE;
+const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
+  ENUM_USER_ROLE;
 const router = express.Router();
 router.post(
   '/create-pbs',
@@ -17,10 +18,14 @@ router.delete(
   auth(ADMIN, SUPER_ADMIN),
   PbsController.singleDeleteFromDB
 );
-router.get('/', auth(ADMIN, SUPER_ADMIN, USER), PbsController.getAllFromDB);
+router.get(
+  '/',
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
+  PbsController.getAllFromDB
+);
 router.get(
   '/:pbsCode',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   PbsController.getDataById
 );
 

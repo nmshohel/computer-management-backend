@@ -4,7 +4,8 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { RevenueItemController } from './revenueitem.controller';
 import { RevenueItemValidation } from './revenueitem.validation';
-const { SUPER_ADMIN, ADMIN, USER } = ENUM_USER_ROLE;
+const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
+  ENUM_USER_ROLE;
 const router = express.Router();
 router.post(
   '/create-revenue-item',
@@ -14,12 +15,12 @@ router.post(
 );
 router.get(
   '/:pbsCode',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   RevenueItemController.getAllFromDB
 );
 router.get(
   '/revenue/:id',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   RevenueItemController.getDataById
 );
 router.patch(

@@ -6,7 +6,8 @@ import { UserController } from './user.controller';
 import { UserValidation } from './user.validation';
 
 const router = express.Router();
-const { SUPER_ADMIN, ADMIN, USER } = ENUM_USER_ROLE;
+const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
+  ENUM_USER_ROLE;
 router.post(
   '/create-user',
   auth(ADMIN, SUPER_ADMIN),
@@ -16,12 +17,12 @@ router.post(
 
 router.get(
   '/:pbsCode',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   UserController.getAllFromDB
 );
 router.get(
   '/user/:mobileNo',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   UserController.getDataById
 );
 router.patch(

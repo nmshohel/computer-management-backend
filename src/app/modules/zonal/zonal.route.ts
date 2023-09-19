@@ -4,7 +4,8 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { ZonalController } from './zonal.controller';
 import { ZonalValidation } from './zonal.validation';
-const { SUPER_ADMIN, ADMIN, USER } = ENUM_USER_ROLE;
+const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
+  ENUM_USER_ROLE;
 const router = express.Router();
 router.post(
   '/create-zonal',
@@ -14,12 +15,12 @@ router.post(
 );
 router.get(
   '/:pbsCode',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   ZonalController.getAllFromDB
 );
 router.get(
   '/zonal/:zonalCode',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   ZonalController.getDataById
 );
 router.patch(

@@ -4,11 +4,12 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { SubCategoryController } from './subcategory.controller';
 import { SubCategoryValidation } from './subcategory.validation';
-const { SUPER_ADMIN, ADMIN, USER } = ENUM_USER_ROLE;
+const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
+  ENUM_USER_ROLE;
 const router = express.Router();
 router.post(
   '/create-sub-category',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   validateRequest(SubCategoryValidation.create),
   SubCategoryController.insertIntoDB
 );

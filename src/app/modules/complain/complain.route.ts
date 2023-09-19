@@ -5,7 +5,8 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { ComplainController } from './complain.controller';
 import { ComplainValidation } from './complain.validation';
-const { SUPER_ADMIN, ADMIN, USER } = ENUM_USER_ROLE;
+const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
+  ENUM_USER_ROLE;
 const router = express.Router();
 router.post(
   '/create-complain',
@@ -15,7 +16,7 @@ router.post(
 );
 router.get(
   '/:pbsCode',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   ComplainController.getAllFromDB
 );
 router.patch(
@@ -26,7 +27,7 @@ router.patch(
 );
 router.get(
   '/complain/:complainCode',
-  auth(ADMIN, SUPER_ADMIN, USER),
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   ComplainController.getDataById
 );
 

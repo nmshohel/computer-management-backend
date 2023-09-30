@@ -31,7 +31,6 @@ router.patch(
   CapitalItemController.updateIntoDB
 );
 
-// today api
 router.post(
   '/assign-capital-item/:id',
   auth(ADMIN, SUPER_ADMIN),
@@ -68,10 +67,18 @@ router.post(
   auth(ADMIN, SUPER_ADMIN),
   CapitalItemController.insertReceiveToDB
 );
-// user wise kora hoyeche
 router.get(
   '/not-receive/:pbsCode',
   auth(ADMIN, SUPER_ADMIN),
   CapitalItemController.getAllNotReceiveFromDB
 );
+
+// 01/10/2023------------------------------------------------------------
+
+router.get(
+  '/assignTo/:pbsCode',
+  auth(ADMIN, SUPER_ADMIN),
+  CapitalItemController.getAllFromDBByAssignTo
+);
+
 export const CapitalItemRoutes = router;

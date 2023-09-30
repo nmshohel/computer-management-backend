@@ -238,7 +238,7 @@ model CapitalItem {
   purchasedate     String
   price            String
   warranty         String
-  identificationNo String? @unique
+  identificationNo String? @unique //35.01.CPU-1
   status           String
   modelId          String?
   model            Model?  @relation(fields: [modelId], references: [id])

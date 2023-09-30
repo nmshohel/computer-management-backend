@@ -184,6 +184,26 @@ const insertReceiveToDB = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const getAllFromDBByAssignTo = catchAsync(async (req, res) => {
+  const pbsCode = req.params.id;
+  const filters = pick(req.query, capitalItemFilterableFields);
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+
+  const result = await CapitalItemService.getAllFromDBByAssignTo(
+    filters,
+    options,
+    pbsCode,
+    req.user
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Capital Item Fached',
+    meta: result.meta,
+    data: result.data,
+  });
+});
 export const CapitalItemController = {
   insertIntoDB,
   getAllFromDB,
@@ -197,4 +217,5 @@ export const CapitalItemController = {
   getAllNotCertifyFromDB,
   insertReceiveToDB,
   getAllNotReceiveFromDB,
+  getAllFromDBByAssignTo,
 };

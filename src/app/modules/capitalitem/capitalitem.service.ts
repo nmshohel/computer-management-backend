@@ -555,7 +555,89 @@ const insertReceiveToDB = async (
   });
   return result;
 };
+const getAllFromDBByAssignTo = async (
+  filters: capitalItemFilterRequest,
+  options: IPaginationOptions,
+  pbsCode: string,
+  user: any
+): Promise<IGenericResponse<CapitalItem[]>> => {
+  const { page, limit, skip } = paginationHelpers.calculatePagination(options);
+  // eslint-disable-next-line no-unused-vars
+  console.log(user);
+  const { searchTerm, ...filtersData } = filters;
+  const andConditions = [];
+  if (searchTerm) {
+    andConditions.push({
+      OR: capitalItemSearchableFields.map(field => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
 
+  if (Object.keys(filtersData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filtersData).map(key => ({
+        [key]: {
+          equals: (filtersData as any)[key],
+        },
+      })),
+    });
+  }
+
+  // const whereCondition: Prisma.CapitalItemWhereInput =
+  //   andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereCondition: Prisma.CapitalItemWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  const result = await prisma.capitalItem.findMany({
+    where: {
+      ...whereCondition,
+      pbsCode: pbsCode,
+      receivedByMobileNo: null,
+      assignToMobileNo: user.mobileNo,
+    },
+    skip,
+    take: limit,
+    include: {
+      model: true,
+      brand: true,
+      pbs: true,
+      zonals: true,
+      complainCenter: true,
+      substation: true,
+      itemType: true,
+      category: true,
+      subCategory: true,
+      supplier: true,
+      issueBy: true,
+      addBy: true,
+      approveBy: true,
+      assignTo: true,
+    },
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? {
+            [options.sortBy]: options.sortOrder,
+          }
+        : {
+            createdAt: 'desc',
+          },
+  });
+  // const total = await prisma.capitalItem.count();
+  console.log('result', result.length);
+  // const total = andConditions.length;
+  return {
+    meta: {
+      total: result.length,
+      page,
+      limit,
+    },
+    data: result,
+  };
+};
 export const CapitalItemService = {
   inertIntoDB,
   getAllFromDB,
@@ -569,4 +651,5 @@ export const CapitalItemService = {
   getAllNotCertifyFromDB,
   insertReceiveToDB,
   getAllNotReveiveFromDB,
+  getAllFromDBByAssignTo,
 };

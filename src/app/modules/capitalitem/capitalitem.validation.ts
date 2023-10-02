@@ -17,19 +17,33 @@ const create = z.object({
     warranty: z.string({
       required_error: 'warranty is required',
     }),
-    identificationNo: z.string().optional(),
-    status: z.string({
-      required_error: 'status is required',
+    modelId: z.string({
+      required_error: 'model is required',
+    }),
+    brandId: z.string({
+      required_error: 'brand is required',
+    }),
+    supplierId: z.string({
+      required_error: 'supplier is required',
+    }),
+    categoryId: z.string({
+      required_error: 'category is required',
+    }),
+    subCategoryid: z.string({
+      required_error: 'sub Category is required',
+    }),
+    itemTypeId: z.string({
+      required_error: 'item type is required',
     }),
   }),
 });
 const createAssign = z.object({
   body: z.object({
     assignTo: z.string({
-      required_error: 'assignTo  is required',
+      required_error: 'Assign Employee is required',
     }),
     zonalCode: z.string({
-      required_error: 'zonalCode is required',
+      required_error: 'zonal Code is required',
     }),
   }),
 });

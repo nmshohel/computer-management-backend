@@ -75,17 +75,18 @@ model ComplainCenter {
 }
 
 model User {
-  name                   String
-  mobileNo               String    @id
-  password               String
-  role                   String
-  pbsTransferStatus      Boolean?  @default(false)
-  pbsTransferRequestBy   String?
-  pbsTransferRequestDate DateTime?
-  pbsTranferApprovedBy   String?
-  pbsTranferApprovedDate DateTime?
-  pbsTranferCancelBy     String?
-  pbsTranferCancelDate   DateTime?
+  name                        String
+  mobileNo                    String    @id
+  password                    String
+  role                        String
+  pbsTransferStatus           Boolean?  @default(false)
+  pbsTransferRequestBy        String?
+  pbsTransferRequestedPbsCode String?
+  pbsTransferRequestDate      DateTime?
+  pbsTranferApprovedBy        String?
+  pbsTranferApprovedDate      DateTime?
+  pbsTranferCancelBy          String?
+  pbsTranferCancelDate        DateTime?
 
   zonalTransferStatus           Boolean?        @default(false)
   requestedZonalCode            String?
@@ -232,51 +233,52 @@ model Model {
 }
 
 model CapitalItem {
-  id               String  @id @default(uuid())
-  serialNo         String
-  description      String
-  purchasedate     String
-  price            String
-  warranty         String
-  identificationNo String? @unique //35.01.CPU-1
-  status           String
-  modelId          String?
-  model            Model?  @relation(fields: [modelId], references: [id])
-  brandId          String?
-  brand            Brand?  @relation(fields: [brandId], references: [id])
+  id                         String          @id @default(uuid())
+  serialNo                   String
+  description                String
+  purchasedate               String
+  price                      String
+  warranty                   String
+  modelId                    String
+  model                      Model           @relation(fields: [modelId], references: [id])
+  brandId                    String
+  brand                      Brand           @relation(fields: [brandId], references: [id])
+  supplierId                 String
+  supplier                   Supplier        @relation(fields: [supplierId], references: [id])
+  itemTypeId                 String
+  itemType                   ItemType        @relation(fields: [itemTypeId], references: [id])
+  categoryId                 String
+  category                   Category        @relation(fields: [categoryId], references: [id])
+  subCategoryid              String
+  subCategory                SubCategory     @relation(fields: [subCategoryid], references: [id])
+  //above data insert from frontend 
+  pbsCode                    String
+  pbs                        PBS             @relation(fields: [pbsCode], references: [pbsCode])
+  addByMobileNo              String
+  addBy                      User            @relation(fields: [addByMobileNo], references: [mobileNo], name: "addByCapital")
+  activeOrcondemnationStatus String          @default("a") //active or condemed
+  //above data insert from backend
+  identificationNo           String?         @unique
+  zonalCode                  String?
+  zonals                     Zonals?         @relation(fields: [zonalCode], references: [zonalCode])
+  complainCode               String?
+  complainCenter             ComplainCenter? @relation(fields: [complainCode], references: [complainCode])
+  substationCode             String?
+  substation                 Substation?     @relation(fields: [substationCode], references: [substationCode])
 
-  pbsCode String
-  pbs     PBS    @relation(fields: [pbsCode], references: [pbsCode])
-
-  zonalCode           String?
-  zonals              Zonals?         @relation(fields: [zonalCode], references: [zonalCode])
-  complainCode        String?
-  complainCenter      ComplainCenter? @relation(fields: [complainCode], references: [complainCode])
-  substationCode      String?
-  substation          Substation?     @relation(fields: [substationCode], references: [substationCode])
-  itemTypeId          String?
-  itemType            ItemType?       @relation(fields: [itemTypeId], references: [id])
-  categoryId          String?
-  category            Category?       @relation(fields: [categoryId], references: [id])
-  subCategoryid       String?
-  subCategory         SubCategory?    @relation(fields: [subCategoryid], references: [id])
   issueByMobileNo     String?
-  issueBy             User?           @relation(fields: [issueByMobileNo], references: [mobileNo], name: "issueByCapital")
+  issueBy             User?         @relation(fields: [issueByMobileNo], references: [mobileNo], name: "issueByCapital")
   assignToMobileNo    String?
-  assignTo            User?           @relation(fields: [assignToMobileNo], references: [mobileNo], name: "assignToCapital")
+  assignTo            User?         @relation(fields: [assignToMobileNo], references: [mobileNo], name: "assignToCapital")
   approveByMobileNo   String?
-  approveBy           User?           @relation(fields: [approveByMobileNo], references: [mobileNo], name: "approveByCapital")
+  approveBy           User?         @relation(fields: [approveByMobileNo], references: [mobileNo], name: "approveByCapital")
   receivedByMobileNo  String?
-  received            User?           @relation(fields: [receivedByMobileNo], references: [mobileNo], name: "reveivedByCapital")
-  addByMobileNo       String
-  addBy               User            @relation(fields: [addByMobileNo], references: [mobileNo], name: "addByCapital")
+  received            User?         @relation(fields: [receivedByMobileNo], references: [mobileNo], name: "reveivedByCapital")
   certifiedByMobileNo String?
-  certifiedBy         User?           @relation(fields: [certifiedByMobileNo], references: [mobileNo], name: "certifiedByCapital")
-  supplierId          String
-  supplier            Supplier        @relation(fields: [supplierId], references: [id])
+  certifiedBy         User?         @relation(fields: [certifiedByMobileNo], references: [mobileNo], name: "certifiedByCapital")
   revenueItem         RevenueItem[]
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
   survicings          Survicing[]
 
   @@map("capital_item")

@@ -10,7 +10,22 @@ import prisma from '../../../shared/prisma';
 import { capitalItemSearchableFields } from './capitalitem.constrant';
 import { capitalItemFilterRequest } from './capitalitem.interface';
 
-const inertIntoDB = async (data: CapitalItem): Promise<CapitalItem> => {
+const inertIntoDB = async (
+  data: CapitalItem,
+  authUser: { mobileNo: string; role: string; pbsCode: string }
+): Promise<CapitalItem> => {
+  data.pbsCode = authUser.pbsCode;
+  data.addByMobileNo = authUser.mobileNo;
+  const isExist = await prisma.capitalItem.findFirst({
+    where: {
+      brandId: data.brandId,
+      serialNo: data.serialNo,
+      modelId: data.modelId,
+    },
+  });
+  if (isExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Capital item already exist');
+  }
   const result = prisma.capitalItem.create({
     data: data,
   });
@@ -54,6 +69,7 @@ const getAllFromDB = async (
     where: {
       ...whereCondition,
       pbsCode: pbsCode,
+      activeOrcondemnationStatus: 'a',
     },
     skip,
     take: limit,
@@ -158,7 +174,7 @@ const getAllNotAssignFromDB = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.capitalItem.count();
+  const total = await prisma.capitalItem.count({});
   return {
     meta: {
       total,
@@ -596,8 +612,7 @@ const getAllFromDBByAssignTo = async (
     where: {
       ...whereCondition,
       pbsCode: pbsCode,
-      receivedByMobileNo: null,
-      assignToMobileNo: user.mobileNo,
+      receivedByMobileNo: user.mobileNo,
     },
     skip,
     take: limit,

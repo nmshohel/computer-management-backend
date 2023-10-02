@@ -8,7 +8,11 @@ import { capitalItemFilterableFields } from './capitalitem.constrant';
 import { CapitalItemService } from './capitalitem.service';
 
 const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
-  const result = await CapitalItemService.inertIntoDB(req.body);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const user = (req as any).user;
+  console.log(user);
+
+  const result = await CapitalItemService.inertIntoDB(req.body, user);
   sendResponse<CapitalItem>(res, {
     statusCode: httpStatus.OK,
     success: true,

@@ -132,6 +132,7 @@ const pbsPostingRequest = async (
     data: {
       pbsTransferStatus: true,
       pbsTransferRequestBy: authUser.mobileNo,
+      pbsTransferRequestedPbsCode: authUser.pbsCode,
       pbsTransferRequestDate: new Date(),
     },
   });
@@ -169,7 +170,12 @@ const getAllPbsTransferRequestedUser = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.user.count();
+  const total = await prisma.user.count({
+    where: {
+      pbsTransferStatus: true,
+      pbsCode: pbsCode,
+    },
+  });
   return {
     meta: {
       total,

@@ -8,11 +8,40 @@ import { RevenueItemFilterableFields } from './revenueitem.constrant';
 import { RevenueItemService } from './revenueitem.service';
 
 const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
-  const result = await RevenueItemService.inertIntoDB(req.body);
+  const user = (req as any).user;
+  const result = await RevenueItemService.inertIntoDB(req.body, user);
   sendResponse<RevenueItem>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'RevenueItem Created Successfully',
+    data: result,
+  });
+});
+const assignToUserOrIdentificationNo: RequestHandler = catchAsync(
+  async (req, res) => {
+    const user = (req as any).user;
+    const id = req.params.id;
+    const result = await RevenueItemService.assignToUserOrIdentificationNo(
+      req.body,
+      user,
+      id
+    );
+    sendResponse<RevenueItem>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Item Assign Successfully',
+      data: result,
+    });
+  }
+);
+const createReveiveByUser: RequestHandler = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const id = req.params.id;
+  const result = await RevenueItemService.createReveivedByUser(user, id);
+  sendResponse<RevenueItem>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Item Reveived Successfully',
     data: result,
   });
 });
@@ -26,6 +55,44 @@ const getAllFromDB = catchAsync(async (req, res) => {
     filters,
     options,
     pbsCode
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'RevenueItem data fatched',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getAllFromDBByAssignToAndReceivePending = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const filters = pick(req.query, RevenueItemFilterableFields);
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+
+  const result =
+    await RevenueItemService.getAllFromDBByAssignToAndReceivePending(
+      filters,
+      options,
+      user
+    );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'RevenueItem data fatched',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getAllFromDBReveivedBy = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const filters = pick(req.query, RevenueItemFilterableFields);
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+  const result = await RevenueItemService.getAllFromDBReveivedBy(
+    filters,
+    options,
+    user
   );
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -62,4 +129,8 @@ export const RevenueItemController = {
   getAllFromDB,
   getDataById,
   updateIntoDB,
+  assignToUserOrIdentificationNo,
+  getAllFromDBByAssignToAndReceivePending,
+  createReveiveByUser,
+  getAllFromDBReveivedBy,
 };

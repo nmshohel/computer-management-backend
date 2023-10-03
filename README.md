@@ -57,9 +57,43 @@ https://computer-management-system.onrender.com/api/v1/capital-item/35<br>
 http://localhost:5000/api/v1/capital-item/capital/aca0e1bf-d0eb-4f9a-88a4-9b3de65ed6bd<br>
 
 Revenue-Item:<br>
-https://computer-management-system.onrender.com/api/v1/revenue-item/create-revenue-item<br>
-https://computer-management-system.onrender.com/api/v1/revenue-item/35<br>
-http://localhost:5000/api/v1/revenue-item/revenue/d1d9eee8-5b1b-4b04-9240-bab3e0923aed<br>
+POST: https://computer-management-system.onrender.com/api/v1/revenue-item/create-revenue-item<br>
+Req.body:<br>
+
+```json
+{
+{
+    "description": "A sample capital item description.",
+    "purchasedate": "2023-08-24",
+    "price": "500",
+    "warranty": "1 year",
+    "addByMobileNo": "01793047162",
+    "supplierId": "9a479a25-f927-48cf-aaa8-ae01234d5af9",
+    "categoryId": "4de4a319-c373-45b9-b886-0ae707d26613",
+    "subCategoryid": "4505f171-7aa7-458b-a122-b9952732f9e1",
+    "itemTypeId": "41affc50-847d-453d-a090-55baddfe4251"
+}
+}
+```
+
+<br>
+GET: https://computer-management-system.onrender.com/api/v1/revenue-item/35<br>
+GET: http://localhost:5000/api/v1/revenue-item/revenue/d1d9eee8-5b1b-4b04-9240-bab3e0923aed<br>
+
+3.  Assign: http://localhost:5000/api/v1/revenue-item/assign-revenue-item/bb8bdc4f-84d0-4034-88c9-807ec71bca5b (POST) <br>
+    Req.body:<br>
+
+```json
+{
+  "identificationNo": "35.01.MNT.08",
+  "assignToMobileNo": "01793047162"
+}
+```
+
+<br>
+04. Get all for Reveived: http://localhost:5000/api/v1/revenue-item/assignToAndReveivePending (GET)<br>
+05. Received: http://localhost:5000/api/v1/revenue-item/receive-revenue-item/bb8bdc4f-84d0-4034-88c9-807ec71bca5b (POST)<br>
+06. Get all Received By: http://localhost:5000/api/v1/revenue-item/reveived-by (GET)<br>
 
 Department:<br>
 https://computer-management-system.onrender.com/api/v1/department/create-department<br>

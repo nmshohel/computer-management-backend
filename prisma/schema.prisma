@@ -195,7 +195,7 @@ model Category {
 model SubCategory {
   id              String   @id @default(uuid())
   subCategoryName String   @unique
-  itemCode        String
+  itemCode        String?
   categoryId      String
   category        Category @relation(fields: [categoryId], references: [id])
 
@@ -285,49 +285,49 @@ model CapitalItem {
 }
 
 model RevenueItem {
-  id                  String          @id @default(uuid())
-  description         String
-  purchasedate        String
-  price               String
-  warranty            String?
-  serialNo            String?
-  status              String
-  identificationNo    String?
-  capitalItem         CapitalItem?    @relation(fields: [identificationNo], references: [identificationNo])
-  modelId             String?
-  model               Model?          @relation(fields: [modelId], references: [id])
-  brandId             String?
-  brand               Brand?          @relation(fields: [brandId], references: [id])
-  pbsCode             String
-  pbs                 PBS             @relation(fields: [pbsCode], references: [pbsCode])
-  zonalCode           String?
-  zonals              Zonals?         @relation(fields: [zonalCode], references: [zonalCode])
-  complainCode        String?
-  complainCenter      ComplainCenter? @relation(fields: [complainCode], references: [complainCode])
-  substationCode      String?
-  substation          Substation?     @relation(fields: [substationCode], references: [substationCode])
-  itemTypeId          String?
-  itemType            ItemType?       @relation(fields: [itemTypeId], references: [id])
-  categoryId          String?
-  category            Category?       @relation(fields: [categoryId], references: [id])
-  subCategoryid       String?
-  subCategory         SubCategory?    @relation(fields: [subCategoryid], references: [id])
-  issueByMobileNo     String?
-  issueBy             User?           @relation(fields: [issueByMobileNo], references: [mobileNo], name: "issueByRevenue")
-  assignToMobileNo    String?
-  assignTo            User?           @relation(fields: [assignToMobileNo], references: [mobileNo], name: "assignToRevenue")
-  approveByMobleNo    String?
-  approveBy           User?           @relation(fields: [approveByMobleNo], references: [mobileNo], name: "approveByRevenue")
-  receivedByMobileNo  String?
-  received            User?           @relation(fields: [receivedByMobileNo], references: [mobileNo], name: "reveivedByRevenue")
-  addByMobileNo       String
-  addBy               User            @relation(fields: [addByMobileNo], references: [mobileNo], name: "addByRevenue")
-  supplierId          String?
-  supplier            Supplier?       @relation(fields: [supplierId], references: [id])
-  certifiedByMobileNo String?
-  certifiedBy         User?           @relation(fields: [certifiedByMobileNo], references: [mobileNo], name: "certifiedByRevenue")
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
+  id                         String          @id @default(uuid())
+  description                String
+  purchasedate               String
+  price                      String
+  warranty                   String?
+  serialNo                   String?
+  activeOrcondemnationStatus String?         @default("a") //active or damage
+  identificationNo           String?
+  capitalItem                CapitalItem?    @relation(fields: [identificationNo], references: [identificationNo])
+  modelId                    String?
+  model                      Model?          @relation(fields: [modelId], references: [id])
+  brandId                    String?
+  brand                      Brand?          @relation(fields: [brandId], references: [id])
+  pbsCode                    String
+  pbs                        PBS             @relation(fields: [pbsCode], references: [pbsCode])
+  zonalCode                  String?
+  zonals                     Zonals?         @relation(fields: [zonalCode], references: [zonalCode])
+  complainCode               String?
+  complainCenter             ComplainCenter? @relation(fields: [complainCode], references: [complainCode])
+  substationCode             String?
+  substation                 Substation?     @relation(fields: [substationCode], references: [substationCode])
+  itemTypeId                 String?
+  itemType                   ItemType?       @relation(fields: [itemTypeId], references: [id])
+  categoryId                 String?
+  category                   Category?       @relation(fields: [categoryId], references: [id])
+  subCategoryid              String?
+  subCategory                SubCategory?    @relation(fields: [subCategoryid], references: [id])
+  issueByMobileNo            String?
+  issueBy                    User?           @relation(fields: [issueByMobileNo], references: [mobileNo], name: "issueByRevenue")
+  assignToMobileNo           String?
+  assignTo                   User?           @relation(fields: [assignToMobileNo], references: [mobileNo], name: "assignToRevenue")
+  approveByMobleNo           String?
+  approveBy                  User?           @relation(fields: [approveByMobleNo], references: [mobileNo], name: "approveByRevenue")
+  receivedByMobileNo         String?
+  received                   User?           @relation(fields: [receivedByMobileNo], references: [mobileNo], name: "reveivedByRevenue")
+  addByMobileNo              String
+  addBy                      User            @relation(fields: [addByMobileNo], references: [mobileNo], name: "addByRevenue")
+  supplierId                 String
+  supplier                   Supplier        @relation(fields: [supplierId], references: [id])
+  certifiedByMobileNo        String?
+  certifiedBy                User?           @relation(fields: [certifiedByMobileNo], references: [mobileNo], name: "certifiedByRevenue")
+  createdAt                  DateTime        @default(now())
+  updatedAt                  DateTime        @updatedAt
 
   survicings Survicing[]
 

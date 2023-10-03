@@ -8,9 +8,6 @@ const create = z.object({
     categoryId: z.string({
       required_error: 'Category id is required',
     }),
-    itemCode: z.string({
-      required_error: 'Item Code is required',
-    }),
   }),
 });
 

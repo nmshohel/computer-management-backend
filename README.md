@@ -62,17 +62,15 @@ Req.body:<br>
 
 ```json
 {
-{
-    "description": "A sample capital item description.",
-    "purchasedate": "2023-08-24",
-    "price": "500",
-    "warranty": "1 year",
-    "addByMobileNo": "01793047162",
-    "supplierId": "9a479a25-f927-48cf-aaa8-ae01234d5af9",
-    "categoryId": "4de4a319-c373-45b9-b886-0ae707d26613",
-    "subCategoryid": "4505f171-7aa7-458b-a122-b9952732f9e1",
-    "itemTypeId": "41affc50-847d-453d-a090-55baddfe4251"
-}
+  "description": "A sample capital item description.",
+  "purchasedate": "2023-08-24",
+  "price": "500",
+  "warranty": "1 year",
+  "addByMobileNo": "01793047162",
+  "supplierId": "9a479a25-f927-48cf-aaa8-ae01234d5af9",
+  "categoryId": "4de4a319-c373-45b9-b886-0ae707d26613",
+  "subCategoryid": "4505f171-7aa7-458b-a122-b9952732f9e1",
+  "itemTypeId": "41affc50-847d-453d-a090-55baddfe4251"
 }
 ```
 

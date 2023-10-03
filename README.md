@@ -57,7 +57,7 @@ https://computer-management-system.onrender.com/api/v1/capital-item/35<br>
 http://localhost:5000/api/v1/capital-item/capital/aca0e1bf-d0eb-4f9a-88a4-9b3de65ed6bd<br>
 
 Revenue-Item:<br>
-POST: https://computer-management-system.onrender.com/api/v1/revenue-item/create-revenue-item<br>
+Create: http://localhost:5000/api/v1/revenue-item/create-revenue-item (POST)<br>
 Req.body:<br>
 
 ```json
@@ -77,23 +77,22 @@ Req.body:<br>
 ```
 
 <br>
-GET: https://computer-management-system.onrender.com/api/v1/revenue-item/35<br>
-GET: http://localhost:5000/api/v1/revenue-item/revenue/d1d9eee8-5b1b-4b04-9240-bab3e0923aed<br>
-
-3.  Assign: http://localhost:5000/api/v1/revenue-item/assign-revenue-item/bb8bdc4f-84d0-4034-88c9-807ec71bca5b (POST) <br>
-    Req.body:<br>
-
+GET All: http://localhost:5000/api/v1/revenue-item/35<br>
+GET By Id: http://localhost:5000/api/v1/revenue-item/revenue/d1d9eee8-5b1b-4b04-9240-bab3e0923aed<br>
+Assign: http://localhost:5000/api/v1/revenue-item/assign-revenue-item/bb8bdc4f-84d0-4034-88c9-807ec71bca5b (POST) <br>
+Req.body:<br>
 ```json
 {
   "identificationNo": "35.01.MNT.08",
   "assignToMobileNo": "01793047162"
 }
 ```
-
 <br>
-04. Get all for Reveived: http://localhost:5000/api/v1/revenue-item/assignToAndReveivePending (GET)<br>
-05. Received: http://localhost:5000/api/v1/revenue-item/receive-revenue-item/bb8bdc4f-84d0-4034-88c9-807ec71bca5b (POST)<br>
-06. Get all Received By: http://localhost:5000/api/v1/revenue-item/reveived-by (GET)<br>
+Get all for Reveived: http://localhost:5000/api/v1/revenue-item/assignToAndReveivePending (GET)<br>
+
+Create Received: http://localhost:5000/api/v1/revenue-item/receive-revenue-item/bb8bdc4f-84d0-4034-88c9-807ec71bca5b (POST)<br>
+
+Get all Received By: http://localhost:5000/api/v1/revenue-item/reveived-by (GET)<br>
 
 Department:<br>
 https://computer-management-system.onrender.com/api/v1/department/create-department<br>

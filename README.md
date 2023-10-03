@@ -78,15 +78,20 @@ Req.body:<br>
 
 <br>
 GET All: http://localhost:5000/api/v1/revenue-item/35<br>
+
 GET By Id: http://localhost:5000/api/v1/revenue-item/revenue/d1d9eee8-5b1b-4b04-9240-bab3e0923aed<br>
+
 Assign: http://localhost:5000/api/v1/revenue-item/assign-revenue-item/bb8bdc4f-84d0-4034-88c9-807ec71bca5b (POST) <br>
+
 Req.body:<br>
+
 ```json
 {
   "identificationNo": "35.01.MNT.08",
   "assignToMobileNo": "01793047162"
 }
 ```
+
 <br>
 Get all for Reveived: http://localhost:5000/api/v1/revenue-item/assignToAndReveivePending (GET)<br>
 

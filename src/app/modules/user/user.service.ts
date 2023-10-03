@@ -2,7 +2,9 @@
 
 import { Prisma, User } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import httpStatus from 'http-status';
 import config from '../../../config';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -191,6 +193,15 @@ const pbsPostingRequestApprove = async (
   userMobileNo: string
 ): Promise<User> => {
   console.log('authUser', authUser);
+  const requestedUser = await prisma.user.findUnique({
+    where: {
+      mobileNo: userMobileNo,
+    },
+  });
+
+  if (!requestedUser?.pbsTransferRequestedPbsCode) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Employee Not Found');
+  }
   const result = prisma.user.update({
     where: {
       mobileNo: userMobileNo,
@@ -198,7 +209,7 @@ const pbsPostingRequestApprove = async (
     data: {
       pbsTransferStatus: false,
       pbsTranferApprovedBy: authUser.mobileNo,
-      pbsCode: authUser.pbsCode,
+      pbsCode: requestedUser?.pbsTransferRequestedPbsCode,
       pbsTranferApprovedDate: new Date(),
       zonalCode: null,
       substationCode: null,

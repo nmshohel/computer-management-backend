@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Prisma, Survicing } from '@prisma/client';
+import { Prisma, Servicing } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-import { survicingSearchableFields } from './survicing.constrant';
-import { survicingFilterRequest } from './survicing.interface';
-const inertIntoDB = async (data: Survicing): Promise<Survicing> => {
-  const result = prisma.survicing.create({
+import { survicingSearchableFields } from './servicing.constrant';
+import { survicingFilterRequest } from './servicing.interface';
+const inertIntoDB = async (data: Servicing): Promise<Servicing> => {
+  const result = prisma.servicing.create({
     data: data,
   });
   return result;
@@ -17,7 +17,7 @@ const inertIntoDB = async (data: Survicing): Promise<Survicing> => {
 const getAllFromDB = async (
   filters: survicingFilterRequest,
   options: IPaginationOptions
-): Promise<IGenericResponse<Survicing[]>> => {
+): Promise<IGenericResponse<Servicing[]>> => {
   const { page, limit, skip } = paginationHelpers.calculatePagination(options);
   // eslint-disable-next-line no-unused-vars
 
@@ -44,12 +44,13 @@ const getAllFromDB = async (
     });
   }
 
-  const whereCondition: Prisma.SurvicingWhereInput =
+  const whereCondition: Prisma.ServicingWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
-  const result = await prisma.survicing.findMany({
+  const result = await prisma.servicing.findMany({
     where: {
       ...whereCondition,
     },
+    include: { supplier: true, serviceByuser: true, capitalItems: true },
     skip,
     take: limit,
 
@@ -62,7 +63,7 @@ const getAllFromDB = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.survicing.count();
+  const total = await prisma.servicing.count();
   return {
     meta: {
       total,
@@ -73,17 +74,18 @@ const getAllFromDB = async (
   };
 };
 
-const getDataById = async (id: string): Promise<Survicing | null> => {
-  const result = await prisma.survicing.findUnique({
+const getDataById = async (id: string): Promise<Servicing | null> => {
+  const result = await prisma.servicing.findUnique({
     where: {
       id: id,
     },
+    include: { supplier: true, serviceByuser: true, capitalItems: true },
   });
   return result;
 };
 
-const deleteById = async (id: string): Promise<Survicing | null> => {
-  const result = await prisma.survicing.findUnique({
+const deleteById = async (id: string): Promise<Servicing | null> => {
+  const result = await prisma.servicing.findUnique({
     where: {
       id: id,
     },
@@ -92,17 +94,18 @@ const deleteById = async (id: string): Promise<Survicing | null> => {
 };
 const updateIntoDB = async (
   id: string,
-  payload: Partial<Survicing>
-): Promise<Survicing> => {
-  const result = await prisma.survicing.update({
+  payload: Partial<Servicing>
+): Promise<Servicing> => {
+  const result = await prisma.servicing.update({
     where: {
       id: id,
     },
+    include: { supplier: true, serviceByuser: true, capitalItems: true },
     data: payload,
   });
   return result;
 };
-export const SurvicingService = {
+export const ServicingService = {
   inertIntoDB,
   getAllFromDB,
   getDataById,

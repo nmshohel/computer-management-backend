@@ -11,10 +11,10 @@ import { ItemTypeRoutes } from '../modules/itemtype/item.type.route';
 import { ModelRoutes } from '../modules/model/model.route';
 import { PbsRoutes } from '../modules/pbs/pbs.routes';
 import { RevenueRoutes } from '../modules/revenueitem/revenueitem.route';
+import { ServicingRoutes } from '../modules/servicing/servicing.route';
 import { SubCategoryRoutes } from '../modules/subcatagory/subcategory.route';
 import { SubstationRoutes } from '../modules/substation/substation.route';
 import { SupplierRoutes } from '../modules/supplier/supplier.route';
-import { SurvicingRoutes } from '../modules/survicing/survicing.route';
 import { UserRoutes } from '../modules/user/user.route';
 import { ZonalRoutes } from '../modules/zonal/zonal.route';
 
@@ -95,8 +95,8 @@ const moduleRoutes = [
     route: AuthRoutes,
   },
   {
-    path: '/survicing',
-    route: SurvicingRoutes,
+    path: '/servicing',
+    route: ServicingRoutes,
   },
 ];
 

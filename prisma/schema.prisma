@@ -124,7 +124,7 @@ model User {
   updatedAt                     DateTime        @updatedAt
   capitalItemCertifiedByCapital CapitalItem[]   @relation("certifiedByCapital")
   revenueItemcertifiedByRevenue RevenueItem[]   @relation("certifiedByRevenue")
-  survicings                    Survicing[]
+  servicings                    Servicing[]
 
   @@map("users")
 }
@@ -287,7 +287,7 @@ model CapitalItem {
   revenueItem         RevenueItem[]
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
-  survicings          Survicing[]
+  survicings          Servicing[]
 
   @@map("capital_item")
 }
@@ -337,8 +337,6 @@ model RevenueItem {
   createdAt                  DateTime        @default(now())
   updatedAt                  DateTime        @updatedAt
 
-  survicings Survicing[]
-
   @@map("revenue_item")
 }
 
@@ -353,15 +351,15 @@ model Supplier {
   revenueItem RevenueItem[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  survicings  Survicing[]
+  servicings  Servicing[]
 
   @@map("suppliers")
 }
 
-model Survicing {
+model Servicing {
   id                String      @id @default(uuid())
-  survicingCost     String
-  survicingDate     DateTime
+  servicingCost     String
+  servicingDate     DateTime
   description       String
   serviceByMobileNo String
   serviceByuser     User        @relation(fields: [serviceByMobileNo], references: [mobileNo])
@@ -369,12 +367,10 @@ model Survicing {
   capitalItems      CapitalItem @relation(fields: [identificationNo], references: [identificationNo])
   suplierId         String
   supplier          Supplier    @relation(fields: [suplierId], references: [id])
-  revenueItemId     String
-  revenueItem       RevenueItem @relation(fields: [revenueItemId], references: [id])
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 
-  @@map("survicings")
+  @@map("servicings")
 }
 
 enum ItemCode {

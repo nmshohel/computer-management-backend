@@ -2,11 +2,11 @@ import { z } from 'zod';
 
 const create = z.object({
   body: z.object({
-    survicingCost: z.string({
-      required_error: 'Survicing Cost  is required',
+    servicingCost: z.string({
+      required_error: 'Servicing Cost  is required',
     }),
-    survicingDate: z.string({
-      required_error: 'Survicing Date  is required',
+    servicingDate: z.string({
+      required_error: 'Servicing Date  is required',
     }),
     serviceByMobileNo: z.string({
       required_error: 'ServiceBy Mobile No is required',
@@ -19,9 +19,6 @@ const create = z.object({
     }),
     suplierId: z.string({
       required_error: 'SuplierId  is required',
-    }),
-    revenueItemId: z.string({
-      required_error: 'RevenueItemId  is required',
     }),
   }),
 });
@@ -36,7 +33,7 @@ const update = z.object({
     revenueItemId: z.string().optional(),
   }),
 });
-export const SurvicingValidation = {
+export const ServicingValidation = {
   create,
   update,
 };

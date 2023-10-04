@@ -6,7 +6,7 @@ const create = z.object({
       required_error: 'mobileNo code is required',
     }),
     name: z.string({
-      required_error: 'Name code is required',
+      required_error: 'Name is required',
     }),
     password: z.string({
       required_error: 'password name is required',

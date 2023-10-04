@@ -19,7 +19,8 @@ model PBS {
   revenueItem    RevenueItem[]
   capitalItem    CapitalItem[]
   supplier       Supplier[]
-  user           User[]
+  user           User[]           @relation("pbs")
+  requestUser    User[]           @relation("requestedPBS")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -35,7 +36,8 @@ model Zonals {
   complainCenter ComplainCenter[]
   revenueItem    RevenueItem[]
   capitalItem    CapitalItem[]
-  user           User[]
+  user           User[]           @relation("zonal")
+  requseteduser  User[]           @relation("requestedZonal")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -75,13 +77,14 @@ model ComplainCenter {
 }
 
 model User {
-  name                        String
   mobileNo                    String    @id
   password                    String
   role                        String
   pbsTransferStatus           Boolean?  @default(false)
   pbsTransferRequestBy        String?
+  requestBy                   Employee? @relation(fields: [pbsTransferRequestBy], references: [mobileNo], name: "requestBy")
   pbsTransferRequestedPbsCode String?
+  requestePBS                 PBS?      @relation(fields: [pbsTransferRequestedPbsCode], references: [pbsCode], name: "requestedPBS")
   pbsTransferRequestDate      DateTime?
   pbsTranferApprovedBy        String?
   pbsTranferApprovedDate      DateTime?
@@ -90,16 +93,18 @@ model User {
 
   zonalTransferStatus           Boolean?        @default(false)
   requestedZonalCode            String?
+  requesteZonal                 Zonals?         @relation(fields: [requestedZonalCode], references: [zonalCode], name: "requestedZonal")
   zonalTransferRequestBy        String?
+  zonalTransferRequestByUser    Employee?       @relation(fields: [zonalTransferRequestBy], references: [mobileNo], name: "zonalTransferrequestBy")
   zonalTransferRequestDate      DateTime?
   zonalTranferApprovedBy        String?
   zonalTranferApprovedDate      DateTime?
   zonalTranferCancelBy          String?
   zonalTranferCancelDate        DateTime?
   pbsCode                       String
-  pbs                           PBS             @relation(fields: [pbsCode], references: [pbsCode])
+  pbs                           PBS             @relation(fields: [pbsCode], references: [pbsCode], name: "pbs")
   zonalCode                     String?
-  zonals                        Zonals?         @relation(fields: [zonalCode], references: [zonalCode])
+  zonals                        Zonals?         @relation(fields: [zonalCode], references: [zonalCode], name: "zonal")
   substationCode                String?
   substation                    Substation?     @relation(fields: [substationCode], references: [substationCode])
   complainCode                  String?
@@ -125,17 +130,20 @@ model User {
 }
 
 model Employee {
-  id          String   @id @default(uuid())
-  designation String?
-  phone       String?
-  address     String?
-  trgId       String?
-  photoUrl    String?
-  signUrl     String?
-  mobileNo    String   @unique
-  user        User?    @relation(fields: [mobileNo], references: [mobileNo])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                         String   @id @default(uuid())
+  name                       String?
+  designation                String?
+  phone                      String?
+  address                    String?
+  trgId                      String?
+  photoUrl                   String?
+  signUrl                    String?
+  mobileNo                   String   @unique
+  user                       User?    @relation(fields: [mobileNo], references: [mobileNo])
+  requestByuser              User[]   @relation("requestBy")
+  zonalTransferRequestByuser User[]   @relation("zonalTransferrequestBy")
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
 
   @@map("employees")
 }

@@ -9,7 +9,7 @@ const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
 const router = express.Router();
 router.post(
   '/create-pbs',
-  auth(ADMIN, SUPER_ADMIN),
+  // auth(ADMIN, SUPER_ADMIN),
   validateRequest(PbsValidation.create),
   PbsController.insertIntoDB
 );

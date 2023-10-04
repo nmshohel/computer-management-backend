@@ -34,9 +34,8 @@ router.patch(
 // ------------------------------
 
 router.post(
-  '/pbs-posting-request',
+  '/pbs-posting-request/:mobileNo',
   auth(ADMIN, SUPER_ADMIN),
-  validateRequest(UserValidation.UserTransferRequstOrApproveOrCancle),
   UserController.pbsPostingRequest
 );
 router.get(

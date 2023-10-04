@@ -12,7 +12,11 @@ import prisma from '../../../shared/prisma';
 import { userSearchableFields } from './user.constrant';
 import { userFilterRequest } from './user.interface';
 
-const inertIntoDB = async (data: User): Promise<User> => {
+const inertIntoDB = async (
+  name: string,
+  designation: string,
+  data: User
+): Promise<User> => {
   let result: User | null = null;
 
   await prisma.$transaction(async tx => {
@@ -28,6 +32,8 @@ const inertIntoDB = async (data: User): Promise<User> => {
     await tx.employee.create({
       data: {
         mobileNo: result.mobileNo,
+        name: name,
+        designation: designation,
       },
     });
   });
@@ -107,6 +113,14 @@ const getDataById = async (mobileNo: string): Promise<User | null> => {
     where: {
       mobileNo: mobileNo,
     },
+    include: {
+      employee: true,
+      pbs: true,
+      requestBy: true,
+      requestePBS: true,
+      zonals: true,
+      requesteZonal: true,
+    },
   });
   return result;
 };
@@ -125,17 +139,23 @@ const updateIntoDB = async (
 
 const pbsPostingRequest = async (
   authUser: any,
-  bodyData: any
+  mobileNo: string
 ): Promise<User> => {
   const result = prisma.user.update({
     where: {
-      mobileNo: bodyData.mobileNo,
+      mobileNo: mobileNo,
     },
     data: {
       pbsTransferStatus: true,
       pbsTransferRequestBy: authUser.mobileNo,
       pbsTransferRequestedPbsCode: authUser.pbsCode,
       pbsTransferRequestDate: new Date(),
+    },
+    include: {
+      pbs: true,
+      employee: true,
+      requestBy: true,
+      requestePBS: true,
     },
   });
   const requestedUser = await result;
@@ -154,6 +174,7 @@ const getAllPbsTransferRequestedUser = async (
       pbsTransferStatus: true,
       pbsCode: pbsCode,
     },
+
     skip,
     take: limit,
     include: {
@@ -162,6 +183,8 @@ const getAllPbsTransferRequestedUser = async (
       complainCenter: true,
       substation: true,
       employee: true,
+      requestBy: true,
+      requestePBS: true,
     },
     orderBy:
       options.sortBy && options.sortOrder
@@ -205,6 +228,10 @@ const pbsPostingRequestApprove = async (
   const result = prisma.user.update({
     where: {
       mobileNo: userMobileNo,
+    },
+    include: {
+      requestePBS: true,
+      requestBy: true,
     },
     data: {
       pbsTransferStatus: false,
@@ -250,6 +277,12 @@ const zonalPostingRequest = async (
       zonalTransferRequestBy: authUser.mobileNo,
       zonalTransferRequestDate: new Date(),
     },
+    include: {
+      zonals: true,
+      pbs: true,
+      requesteZonal: true,
+      zonalTransferRequestByUser: true,
+    },
   });
   return result;
 };
@@ -273,6 +306,8 @@ const getAllZonalTransferRequestedUser = async (
       complainCenter: true,
       substation: true,
       employee: true,
+      requesteZonal: true,
+      zonalTransferRequestByUser: true,
     },
     orderBy:
       options.sortBy && options.sortOrder
@@ -303,6 +338,7 @@ const zonalPostingRequestApprove = async (
       mobileNo: userMobileNo,
     },
   });
+  console.log('existingUser', existingUser);
   const result = await prisma.user.update({
     where: {
       mobileNo: userMobileNo,
@@ -312,7 +348,15 @@ const zonalPostingRequestApprove = async (
       zonalTranferApprovedBy: authUser.mobileNo,
       zonalTranferApprovedDate: new Date(),
       zonalCode: existingUser?.requestedZonalCode,
-      requestedZonalCode: null,
+    },
+    include: {
+      pbs: true,
+      zonals: true,
+      complainCenter: true,
+      substation: true,
+      employee: true,
+      requesteZonal: true,
+      zonalTransferRequestByUser: true,
     },
   });
 

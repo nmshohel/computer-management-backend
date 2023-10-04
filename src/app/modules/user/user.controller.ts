@@ -8,7 +8,8 @@ import { userFilterableFields } from './user.constrant';
 import { UserService } from './user.service';
 
 const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
-  const result = await UserService.inertIntoDB(req.body);
+  const { name, designation, ...others } = req.body;
+  const result = await UserService.inertIntoDB(name, designation, others);
   sendResponse<User>(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -55,7 +56,8 @@ const updateIntoDB = catchAsync(async (req, res) => {
 });
 
 const pbsPostingRequest: RequestHandler = catchAsync(async (req, res) => {
-  const result = await UserService.pbsPostingRequest(req.user, req.body);
+  const userMobileNo: string = req.params.mobileNo;
+  const result = await UserService.pbsPostingRequest(req.user, userMobileNo);
   sendResponse<User>(res, {
     statusCode: httpStatus.OK,
     success: true,

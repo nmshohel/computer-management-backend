@@ -7,6 +7,7 @@ import config from '../../../config';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
 import {
+  IChangePassword,
   ILoginUser,
   IRefreshTokenResponse,
   IUserLoginResponse,
@@ -125,8 +126,55 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     accessToken: newAccessToken,
   };
 };
+const changePassword = async (
+  authUser: { mobileNo: string; role: string; pbsCode: string },
+  payload: IChangePassword
+): Promise<void> => {
+  const { oldPassword, newPassword } = payload;
+
+  // // checking is user exist
+  // const isUserExist = await User.isUserExist(user?.userId);
+
+  //alternative way
+  const isUserExist = await prisma.user.findFirst({
+    where: {
+      mobileNo: authUser.mobileNo,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
+  }
+
+  // checking old password
+
+  const isPasswordMached = await bcrypt.compare(
+    oldPassword,
+    isUserExist.password
+  );
+  if (!isPasswordMached) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect old password');
+  }
+  // hash password before saving
+  const newHashedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.bycrypt_salt_rounds)
+  );
+
+  const updatePassword = await prisma.user.update({
+    where: {
+      mobileNo: authUser.mobileNo,
+    },
+    data: {
+      password: newHashedPassword,
+    },
+  });
+
+  console.log('updatePassword', updatePassword);
+};
 
 export const AuthService = {
   loginUser,
   refreshToken,
+  changePassword,
 };

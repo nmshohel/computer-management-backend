@@ -8,10 +8,16 @@ const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
   ENUM_USER_ROLE;
 const router = express.Router();
 router.get(
-  '/assignToAndReveivePending',
+  '/assignPending',
   auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
-  RevenueItemController.getAllFromDBByAssignToAndReceivePending
+  RevenueItemController.getAllAssignPending
 );
+router.get(
+  '/ReveivePending',
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
+  RevenueItemController.getAllReceivePending
+);
+
 router.get(
   '/reveived-by',
   auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),

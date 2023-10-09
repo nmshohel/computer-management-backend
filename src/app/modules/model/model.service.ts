@@ -11,6 +11,9 @@ import { modelFilterRequest } from './model.interface';
 const inertIntoDB = async (data: Model): Promise<Model> => {
   const result = prisma.model.create({
     data: data,
+    include:{
+      brand:true
+    }
   });
   return result;
 };

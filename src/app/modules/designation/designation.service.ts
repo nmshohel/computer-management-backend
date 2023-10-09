@@ -11,6 +11,9 @@ import { designationFilterRequest } from './designation.interface';
 const inertIntoDB = async (data: Designation): Promise<Designation> => {
   const result = prisma.designation.create({
     data: data,
+    include:{
+      department:true
+    }
   });
   return result;
 };

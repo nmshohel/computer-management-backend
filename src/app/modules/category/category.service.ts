@@ -11,6 +11,9 @@ import { categoryFilterRequest } from './category.interface';
 const inertIntoDB = async (data: Category): Promise<Category> => {
   const result = prisma.category.create({
     data: data,
+    include:{
+      itemType:true
+    }
   });
   return result;
 };

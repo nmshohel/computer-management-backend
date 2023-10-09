@@ -28,6 +28,24 @@ const inertIntoDB = async (
   }
   const result = prisma.capitalItem.create({
     data: data,
+    include:{
+      model:true,
+      brand:true,
+      supplier:true,
+      itemType:true,
+      category:true,
+      subCategory:true,
+      pbs:true,
+      addBy:true,
+      zonals:true,
+      complainCenter:true,
+      substation:true,
+      issueBy:true,
+      assignTo:true,
+      approveBy:true,
+      received:true,
+      certifiedBy:true
+    }
   });
   return result;
 };

@@ -11,6 +11,9 @@ import { subCategoryFilterRequest } from './subcategory.interface';
 const inertIntoDB = async (data: SubCategory): Promise<SubCategory> => {
   const result = prisma.subCategory.create({
     data: data,
+    include:{
+      category:true
+    }
   });
   return result;
 };

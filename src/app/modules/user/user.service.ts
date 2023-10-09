@@ -27,6 +27,16 @@ const inertIntoDB = async (
 
     result = await tx.user.create({
       data: data,
+      include:{
+        requestBy:true,
+        requestePBS:true,
+        requesteZonal:true,
+        zonalTransferRequestByUser:true,
+        pbs:true,
+        zonals:true,
+        complainCenter:true,
+        substation:true
+      }
     });
 
     await tx.employee.create({

@@ -11,6 +11,9 @@ import { zonalFilterRequest } from './zonal.interface';
 const inertIntoDB = async (zonalData: Zonals): Promise<Zonals> => {
   const result = prisma.zonals.create({
     data: zonalData,
+    include:{
+      pbs:true
+    }
   });
   return result;
 };

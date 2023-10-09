@@ -10,7 +10,7 @@ const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
   ENUM_USER_ROLE;
 router.post(
   '/create-user',
-  auth(ADMIN, SUPER_ADMIN),
+  // auth(ADMIN, SUPER_ADMIN),
   validateRequest(UserValidation.create),
   UserController.insertIntoDB
 );

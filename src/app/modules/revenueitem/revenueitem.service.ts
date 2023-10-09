@@ -22,7 +22,7 @@ const inertIntoDB = async (
   return result;
 };
 const assignToUserOrIdentificationNo = async (
-  data: { identificationNo: string; assignToMobileNo: string },
+  data: { identificationNo: string; assignToMobileNo: string, zonalCode: string },
   authUser: { mobileNo: string; role: string; pbsCode: string },
   id: string
 ): Promise<RevenueItem> => {
@@ -46,6 +46,7 @@ const assignToUserOrIdentificationNo = async (
     },
     data: {
       issueByMobileNo: authUser?.mobileNo,
+      zonalCode: data.zonalCode,
       assignToMobileNo: data.assignToMobileNo,
       identificationNo: data.identificationNo,
     },
@@ -126,11 +127,11 @@ const getAllFromDB = async (
     orderBy:
       options.sortBy && options.sortOrder
         ? {
-            [options.sortBy]: options.sortOrder,
-          }
+          [options.sortBy]: options.sortOrder,
+        }
         : {
-            createdAt: 'desc',
-          },
+          createdAt: 'desc',
+        },
   });
   const total = await prisma.revenueItem.count();
   return {
@@ -142,7 +143,92 @@ const getAllFromDB = async (
     data: result,
   };
 };
-const getAllFromDBByAssignToAndReceivePending = async (
+const getAllAssignPending = async (
+  filters: RevenueItemFilterRequest,
+  options: IPaginationOptions,
+  authUser: { mobileNo: string; role: string; pbsCode: string }
+): Promise<IGenericResponse<RevenueItem[]>> => {
+  console.log('from assign to adn');
+  const { page, limit, skip } = paginationHelpers.calculatePagination(options);
+  // eslint-disable-next-line no-unused-vars
+
+  const { searchTerm, ...filtersData } = filters;
+  const andConditions = [];
+  if (searchTerm) {
+    andConditions.push({
+      OR: RevenueItemSearchableFields.map(field => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filtersData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filtersData).map(key => ({
+        [key]: {
+          equals: (filtersData as any)[key],
+        },
+      })),
+    });
+  }
+
+  const whereCondition: Prisma.RevenueItemWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+  const result = await prisma.revenueItem.findMany({
+    where: {
+      ...whereCondition,
+      assignToMobileNo: null,
+      // receivedByMobileNo: null,
+      activeOrcondemnationStatus: 'a',
+    },
+    skip,
+    take: limit,
+    include: {
+      model: true,
+      brand: true,
+      pbs: true,
+      zonals: true,
+      complainCenter: true,
+      substation: true,
+      itemType: true,
+      category: true,
+      subCategory: true,
+      supplier: true,
+      issueBy: true,
+      addBy: true,
+      approveBy: true,
+      assignTo: true,
+    },
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? {
+          [options.sortBy]: options.sortOrder,
+        }
+        : {
+          createdAt: 'desc',
+        },
+  });
+  console.log('result', 'result');
+  const total = await prisma.revenueItem.count({
+    where: {
+      assignToMobileNo: authUser?.mobileNo,
+      receivedByMobileNo: null,
+      activeOrcondemnationStatus: 'a',
+    },
+  });
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
+};
+const getAllReceivePending = async (
   filters: RevenueItemFilterRequest,
   options: IPaginationOptions,
   authUser: { mobileNo: string; role: string; pbsCode: string }
@@ -204,11 +290,11 @@ const getAllFromDBByAssignToAndReceivePending = async (
     orderBy:
       options.sortBy && options.sortOrder
         ? {
-            [options.sortBy]: options.sortOrder,
-          }
+          [options.sortBy]: options.sortOrder,
+        }
         : {
-            createdAt: 'desc',
-          },
+          createdAt: 'desc',
+        },
   });
   console.log('result', 'result');
   const total = await prisma.revenueItem.count({
@@ -288,11 +374,11 @@ const getAllFromDBReveivedBy = async (
     orderBy:
       options.sortBy && options.sortOrder
         ? {
-            [options.sortBy]: options.sortOrder,
-          }
+          [options.sortBy]: options.sortOrder,
+        }
         : {
-            createdAt: 'desc',
-          },
+          createdAt: 'desc',
+        },
   });
   console.log('result', 'result');
   const total = await prisma.revenueItem.count({
@@ -335,7 +421,9 @@ export const RevenueItemService = {
   getDataById,
   updateIntoDB,
   assignToUserOrIdentificationNo,
-  getAllFromDBByAssignToAndReceivePending,
+  // getAllFromDBByAssignToAndReceivePending,
+  getAllReceivePending,
+  getAllAssignPending,
   createReveivedByUser,
   getAllFromDBReveivedBy,
 };

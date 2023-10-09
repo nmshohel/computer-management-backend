@@ -10,6 +10,11 @@ import { survicingFilterRequest } from './servicing.interface';
 const inertIntoDB = async (data: Servicing): Promise<Servicing> => {
   const result = prisma.servicing.create({
     data: data,
+    include:{
+      serviceByuser:true,
+      capitalItems:true,
+      supplier:true
+    }
   });
   return result;
 };

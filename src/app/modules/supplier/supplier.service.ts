@@ -11,6 +11,9 @@ import { supplierFilterRequest } from './supplier.interface';
 const inertIntoDB = async (data: Supplier): Promise<Supplier> => {
   const result = prisma.supplier.create({
     data: data,
+    include:{
+    pbs:true
+    }
   });
   return result;
 };

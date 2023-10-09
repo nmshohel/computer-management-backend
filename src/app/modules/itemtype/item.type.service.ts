@@ -8,9 +8,9 @@ import prisma from '../../../shared/prisma';
 import { itemTypeSearchableFields } from './item.type.constrant';
 import { itemTypeFilterRequest } from './item.type.interface';
 
-const inertIntoDB = async (zonalData: ItemType): Promise<ItemType> => {
+const inertIntoDB = async (itemTypeData: ItemType): Promise<ItemType> => {
   const result = prisma.itemType.create({
-    data: zonalData,
+    data: itemTypeData,
   });
   return result;
 };

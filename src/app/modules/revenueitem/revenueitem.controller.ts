@@ -65,13 +65,32 @@ const getAllFromDB = catchAsync(async (req, res) => {
   });
 });
 
-const getAllFromDBByAssignToAndReceivePending = catchAsync(async (req, res) => {
+const getAllReceivePending = catchAsync(async (req, res) => {
   const user = (req as any).user;
   const filters = pick(req.query, RevenueItemFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
   const result =
-    await RevenueItemService.getAllFromDBByAssignToAndReceivePending(
+    await RevenueItemService.getAllReceivePending(
+      filters,
+      options,
+      user
+    );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'RevenueItem data fatched',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+const getAllAssignPending = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const filters = pick(req.query, RevenueItemFilterableFields);
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+
+  const result =
+    await RevenueItemService.getAllAssignPending(
       filters,
       options,
       user
@@ -130,7 +149,9 @@ export const RevenueItemController = {
   getDataById,
   updateIntoDB,
   assignToUserOrIdentificationNo,
-  getAllFromDBByAssignToAndReceivePending,
+  // getAllFromDBByAssignToAndReceivePending,
+  getAllAssignPending,
+  getAllReceivePending,
   createReveiveByUser,
   getAllFromDBReveivedBy,
 };

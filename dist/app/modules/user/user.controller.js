@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -20,7 +31,8 @@ const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const user_constrant_1 = require("./user.constrant");
 const user_service_1 = require("./user.service");
 const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_service_1.UserService.inertIntoDB(req.body);
+    const _a = req.body, { name, designation } = _a, others = __rest(_a, ["name", "designation"]);
+    const result = yield user_service_1.UserService.inertIntoDB(name, designation, others);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -62,9 +74,100 @@ const updateIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const pbsPostingRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userMobileNo = req.params.mobileNo;
+    const result = yield user_service_1.UserService.pbsPostingRequest(req.user, userMobileNo);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'PBS Transfer Request Successfully',
+        data: result,
+    });
+}));
+const getAllPbsTransferRequestedUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const pbsCode = req.params.pbsCode;
+    const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = yield user_service_1.UserService.getAllPbsTransferRequestedUser(options, pbsCode);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'User Transfer Requested data fatched',
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const pbsPostingRequestApprove = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userMobileNo = req.params.mobileNo;
+    const result = yield user_service_1.UserService.pbsPostingRequestApprove(req.user, userMobileNo);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'PBS Transfer Request Approve Successfully',
+        data: result,
+    });
+}));
+const pbsPostingRequestCancel = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userMobileNo = req.params.mobileNo;
+    const result = yield user_service_1.UserService.pbsPostingRequestCancel(req.user, userMobileNo);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'PBS Transfer Request Cancel Successfully',
+        data: result,
+    });
+}));
+const zonalPostingRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_service_1.UserService.zonalPostingRequest(req.user, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Zonal Transfer Request Successfully',
+        data: result,
+    });
+}));
+const getAllZonalTransferRequestedUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const pbsCode = req.params.pbsCode;
+    const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = yield user_service_1.UserService.getAllZonalTransferRequestedUser(options, pbsCode);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'User Transfer Requested data fatched',
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const zonalPostingRequestApprove = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userMobileNo = req.params.mobileNo;
+    const result = yield user_service_1.UserService.zonalPostingRequestApprove(req.user, userMobileNo);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Zonal Transfer Request Approve Successfully',
+        data: result,
+    });
+}));
+const zonalPostingRequestCancel = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userMobileNo = req.params.mobileNo;
+    const result = yield user_service_1.UserService.zonalPostingRequestCancel(req.user, userMobileNo);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Zonal Transfer Request Cancel Successfully',
+        data: result,
+    });
+}));
 exports.UserController = {
     insertIntoDB,
     getAllFromDB,
     getDataById,
     updateIntoDB,
+    pbsPostingRequest,
+    pbsPostingRequestApprove,
+    pbsPostingRequestCancel,
+    getAllPbsTransferRequestedUser,
+    zonalPostingRequest,
+    getAllZonalTransferRequestedUser,
+    zonalPostingRequestApprove,
+    zonalPostingRequestCancel,
 };

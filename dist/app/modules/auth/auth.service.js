@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
+/* eslint-disable no-unused-vars */
 const http_status_1 = __importDefault(require("http-status"));
 const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 // import { User } from '../user/user.model';
@@ -104,7 +105,100 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
         accessToken: newAccessToken,
     };
 });
+const changePassword = (authUser, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { oldPassword, newPassword } = payload;
+    // // checking is user exist
+    // const isUserExist = await User.isUserExist(user?.userId);
+    //alternative way
+    const isUserExist = yield prisma_1.default.user.findFirst({
+        where: {
+            mobileNo: authUser.mobileNo,
+        },
+    });
+    if (!isUserExist) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'User does not exist');
+    }
+    // checking old password
+    const isPasswordMached = yield bcrypt_1.default.compare(oldPassword, isUserExist.password);
+    if (!isPasswordMached) {
+        throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'Incorrect old password');
+    }
+    // hash password before saving
+    const newHashedPassword = yield bcrypt_1.default.hash(newPassword, Number(config_1.default.bycrypt_salt_rounds));
+    const updatePassword = yield prisma_1.default.user.update({
+        where: {
+            mobileNo: authUser.mobileNo,
+        },
+        data: {
+            password: newHashedPassword,
+        },
+    });
+});
+// const forgotPassword = async (
+//   authUser: { mobileNo: string; role: string; pbsCode: string },
+//   payload: IChangePassword
+// ): Promise<void> => {
+//   const { oldPassword, newPassword } = payload;
+//   console.log('this is forgot pass');
+//   // https://ethereal.email/create
+//   const nodeConfig = {
+//     host: 'smtp.ethereal.email',
+//     port: 587,
+//     secure: false, // true for 465, false for other ports
+//     auth: {
+//       user: ENV.EMAIL, // generated ethereal user
+//       pass: ENV.PASSWORD, // generated ethereal password
+//     },
+//   };
+//   const transporter = nodemailer.createTransport(nodeConfig);
+//   const MailGenerator = new Mailgen({
+//     theme: 'default',
+//     product: {
+//       name: 'Mailgen',
+//       link: 'https://mailgen.js/',
+//     },
+//   });
+//   /** POST: http://localhost:8080/api/registerMail
+// * @param: {
+// "username" : "example123",
+// "userEmail" : "admin123",
+// "text" : "",
+// "subject" : "",
+// }
+// */
+//   const registerMail = async (req, res) => {
+//     const { username, userEmail, text, subject } = req.body;
+//     // body of the email
+//     const email = {
+//       body: {
+//         name: username,
+//         intro:
+//           text ||
+//           "Welcome to Daily Tuition! We're very excited to have you on board.",
+//         outro:
+//           "Need help, or have questions? Just reply to this email, we'd love to help.",
+//       },
+//     };
+//     const emailBody = MailGenerator.generate(email);
+//     const message = {
+//       from: "nmshohel1992@gmail.com",
+//       to: "npbs2agmit",
+//       subject: subject || 'Signup Successful',
+//       html: emailBody,
+//     };
+//     // send mail
+//     transporter
+//       .sendMail(message)
+//       .then(() => {
+//         return res
+//           .status(200)
+//           .send({ msg: 'You should receive an email from us.' });
+//       })
+//       .catch(error => res.status(500).send({ error }));
+//   };
+// };
 exports.AuthService = {
     loginUser,
     refreshToken,
+    changePassword,
 };

@@ -31,6 +31,9 @@ const category_constrant_1 = require("./category.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const result = prisma_1.default.category.create({
         data: data,
+        include: {
+            itemType: true
+        }
     });
     return result;
 });

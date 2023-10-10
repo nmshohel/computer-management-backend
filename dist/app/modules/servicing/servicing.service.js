@@ -24,19 +24,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModelService = void 0;
+exports.ServicingService = void 0;
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
-const model_constrant_1 = require("./model.constrant");
+const servicing_constrant_1 = require("./servicing.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = prisma_1.default.model.create({
+    const result = prisma_1.default.servicing.create({
         data: data,
         include: {
-            brand: true
+            serviceByuser: true,
+            capitalItems: true,
+            supplier: true
         }
     });
     return result;
 });
+// get all supplier
 const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelpers.calculatePagination(options);
     // eslint-disable-next-line no-unused-vars
@@ -44,7 +47,7 @@ const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, fun
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            OR: model_constrant_1.modelSearchableFields.map(field => ({
+            OR: servicing_constrant_1.survicingSearchableFields.map(field => ({
                 [field]: {
                     contains: searchTerm,
                     mode: 'insensitive',
@@ -62,13 +65,11 @@ const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, fun
         });
     }
     const whereCondition = andConditions.length > 0 ? { AND: andConditions } : {};
-    const result = yield prisma_1.default.model.findMany({
-        where: whereCondition,
+    const result = yield prisma_1.default.servicing.findMany({
+        where: Object.assign({}, whereCondition),
+        include: { supplier: true, serviceByuser: true, capitalItems: true },
         skip,
         take: limit,
-        include: {
-            brand: true,
-        },
         orderBy: options.sortBy && options.sortOrder
             ? {
                 [options.sortBy]: options.sortOrder,
@@ -77,7 +78,7 @@ const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, fun
                 createdAt: 'desc',
             },
     });
-    const total = yield prisma_1.default.model.count();
+    const total = yield prisma_1.default.servicing.count();
     return {
         meta: {
             total,
@@ -88,15 +89,36 @@ const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, fun
     };
 });
 const getDataById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.model.findUnique({
+    const result = yield prisma_1.default.servicing.findUnique({
+        where: {
+            id: id,
+        },
+        include: { supplier: true, serviceByuser: true, capitalItems: true },
+    });
+    return result;
+});
+const deleteById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.servicing.findUnique({
         where: {
             id: id,
         },
     });
     return result;
 });
-exports.ModelService = {
+const updateIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.servicing.update({
+        where: {
+            id: id,
+        },
+        include: { supplier: true, serviceByuser: true, capitalItems: true },
+        data: payload,
+    });
+    return result;
+});
+exports.ServicingService = {
     inertIntoDB,
     getAllFromDB,
     getDataById,
+    deleteById,
+    updateIntoDB,
 };

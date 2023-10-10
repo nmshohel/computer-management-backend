@@ -20,11 +20,34 @@ const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const revenueitem_constrant_1 = require("./revenueitem.constrant");
 const revenueitem_service_1 = require("./revenueitem.service");
 const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield revenueitem_service_1.RevenueItemService.inertIntoDB(req.body);
+    const user = req.user;
+    const result = yield revenueitem_service_1.RevenueItemService.inertIntoDB(req.body, user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'RevenueItem Created Successfully',
+        data: result,
+    });
+}));
+const assignToUserOrIdentificationNo = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const id = req.params.id;
+    const result = yield revenueitem_service_1.RevenueItemService.assignToUserOrIdentificationNo(req.body, user, id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Item Assign Successfully',
+        data: result,
+    });
+}));
+const createReveiveByUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const id = req.params.id;
+    const result = yield revenueitem_service_1.RevenueItemService.createReveivedByUser(user, id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Item Reveived Successfully',
         data: result,
     });
 }));
@@ -33,6 +56,45 @@ const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     const filters = (0, pick_1.default)(req.query, revenueitem_constrant_1.RevenueItemFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield revenueitem_service_1.RevenueItemService.getAllFromDB(filters, options, pbsCode);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'RevenueItem data fatched',
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const getAllReceivePending = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const filters = (0, pick_1.default)(req.query, revenueitem_constrant_1.RevenueItemFilterableFields);
+    const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = yield revenueitem_service_1.RevenueItemService.getAllReceivePending(filters, options, user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'RevenueItem data fatched',
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const getAllAssignPending = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const filters = (0, pick_1.default)(req.query, revenueitem_constrant_1.RevenueItemFilterableFields);
+    const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = yield revenueitem_service_1.RevenueItemService.getAllAssignPending(filters, options, user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'RevenueItem data fatched',
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const getAllFromDBReveivedBy = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const filters = (0, pick_1.default)(req.query, revenueitem_constrant_1.RevenueItemFilterableFields);
+    const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = yield revenueitem_service_1.RevenueItemService.getAllFromDBReveivedBy(filters, options, user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -67,4 +129,10 @@ exports.RevenueItemController = {
     getAllFromDB,
     getDataById,
     updateIntoDB,
+    assignToUserOrIdentificationNo,
+    // getAllFromDBByAssignToAndReceivePending,
+    getAllAssignPending,
+    getAllReceivePending,
+    createReveiveByUser,
+    getAllFromDBReveivedBy,
 };

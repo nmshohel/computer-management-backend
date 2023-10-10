@@ -31,6 +31,9 @@ const zonal_constrant_1 = require("./zonal.constrant");
 const inertIntoDB = (zonalData) => __awaiter(void 0, void 0, void 0, function* () {
     const result = prisma_1.default.zonals.create({
         data: zonalData,
+        include: {
+            pbs: true
+        }
     });
     return result;
 });

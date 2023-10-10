@@ -31,6 +31,9 @@ const brand_constrant_1 = require("./brand.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const result = prisma_1.default.brand.create({
         data: data,
+        include: {
+            model: true
+        }
     });
     return result;
 });

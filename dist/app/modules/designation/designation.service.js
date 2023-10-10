@@ -31,6 +31,9 @@ const designation_constrant_1 = require("./designation.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const result = prisma_1.default.designation.create({
         data: data,
+        include: {
+            department: true
+        }
     });
     return result;
 });

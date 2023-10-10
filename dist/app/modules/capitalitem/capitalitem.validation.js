@@ -19,11 +19,33 @@ const create = zod_1.z.object({
         warranty: zod_1.z.string({
             required_error: 'warranty is required',
         }),
-        identificationNo: zod_1.z.string({
-            required_error: 'identificationNo is required',
+        modelId: zod_1.z.string({
+            required_error: 'model is required',
         }),
-        status: zod_1.z.string({
-            required_error: 'status is required',
+        brandId: zod_1.z.string({
+            required_error: 'brand is required',
+        }),
+        supplierId: zod_1.z.string({
+            required_error: 'supplier is required',
+        }),
+        categoryId: zod_1.z.string({
+            required_error: 'category is required',
+        }),
+        subCategoryid: zod_1.z.string({
+            required_error: 'sub Category is required',
+        }),
+        itemTypeId: zod_1.z.string({
+            required_error: 'item type is required',
+        }),
+    }),
+});
+const createAssign = zod_1.z.object({
+    body: zod_1.z.object({
+        assignTo: zod_1.z.string({
+            required_error: 'Assign Employee is required',
+        }),
+        zonalCode: zod_1.z.string({
+            required_error: 'zonal Code is required',
         }),
     }),
 });
@@ -41,4 +63,5 @@ const update = zod_1.z.object({
 exports.CapitalItemValidation = {
     create,
     update,
+    createAssign,
 };

@@ -31,6 +31,9 @@ const subcategory_constrant_1 = require("./subcategory.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const result = prisma_1.default.subCategory.create({
         data: data,
+        include: {
+            category: true
+        }
     });
     return result;
 });

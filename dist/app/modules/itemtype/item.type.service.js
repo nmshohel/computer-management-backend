@@ -28,9 +28,9 @@ exports.ItemTypeService = void 0;
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const item_type_constrant_1 = require("./item.type.constrant");
-const inertIntoDB = (zonalData) => __awaiter(void 0, void 0, void 0, function* () {
+const inertIntoDB = (itemTypeData) => __awaiter(void 0, void 0, void 0, function* () {
     const result = prisma_1.default.itemType.create({
-        data: zonalData,
+        data: itemTypeData,
     });
     return result;
 });

@@ -12,33 +12,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EmployeeController = void 0;
+exports.ServicingController = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
+const pick_1 = __importDefault(require("../../../shared/pick"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
-const employee_service_1 = require("./employee.service");
-const getDataById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const mobileNo = req.params.mobileNo;
-    const result = yield employee_service_1.EmployeeService.getDataById(mobileNo);
+const servicing_constrant_1 = require("./servicing.constrant");
+const servicing_service_1 = require("./servicing.service");
+const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield servicing_service_1.ServicingService.inertIntoDB(req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Employee data fatched',
+        message: 'Servicing Created Successfully',
+        data: result,
+    });
+}));
+const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const filters = (0, pick_1.default)(req.query, servicing_constrant_1.survicingFilterableFields);
+    const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = yield servicing_service_1.ServicingService.getAllFromDB(filters, options);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Servicing data fatched',
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const getDataById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield servicing_service_1.ServicingService.getDataById(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Servicing data fatched',
         data: result,
     });
 }));
 const updateIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { mobileNo } = req.params;
+    const { id } = req.params;
     const payload = req.body;
-    const result = yield employee_service_1.EmployeeService.updateIntoDB(mobileNo, payload);
+    const result = yield servicing_service_1.ServicingService.updateIntoDB(id, payload);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Employee Updated Successfully',
+        message: 'Servicing Updated Successfully',
         data: result,
     });
 }));
-exports.EmployeeController = {
+exports.ServicingController = {
+    insertIntoDB,
+    getAllFromDB,
     getDataById,
     updateIntoDB,
 };

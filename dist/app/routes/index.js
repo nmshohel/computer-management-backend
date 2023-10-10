@@ -16,6 +16,7 @@ const item_type_route_1 = require("../modules/itemtype/item.type.route");
 const model_route_1 = require("../modules/model/model.route");
 const pbs_routes_1 = require("../modules/pbs/pbs.routes");
 const revenueitem_route_1 = require("../modules/revenueitem/revenueitem.route");
+const servicing_route_1 = require("../modules/servicing/servicing.route");
 const subcategory_route_1 = require("../modules/subcatagory/subcategory.route");
 const substation_route_1 = require("../modules/substation/substation.route");
 const supplier_route_1 = require("../modules/supplier/supplier.route");
@@ -95,6 +96,10 @@ const moduleRoutes = [
     {
         path: '/auth',
         route: auth_route_1.AuthRoutes,
+    },
+    {
+        path: '/servicing',
+        route: servicing_route_1.ServicingRoutes,
     },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

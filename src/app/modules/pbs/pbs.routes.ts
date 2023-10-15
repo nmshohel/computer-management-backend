@@ -4,12 +4,11 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { PbsController } from './pbs.controller';
 import { PbsValidation } from './pbs.validation';
-const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } =
-  ENUM_USER_ROLE;
+const { ADMIN, SUPER_ADMIN } = ENUM_USER_ROLE;
 const router = express.Router();
 router.post(
   '/create-pbs',
-  auth(ADMIN, SUPER_ADMIN),
+  // auth(ADMIN, SUPER_ADMIN),
   validateRequest(PbsValidation.create),
   PbsController.insertIntoDB
 );

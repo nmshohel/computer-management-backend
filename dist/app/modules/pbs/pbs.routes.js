@@ -14,6 +14,10 @@ const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } = user_1.E
 const router = express_1.default.Router();
 router.post('/create-pbs', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(pbs_validation_1.PbsValidation.create), pbs_controller_1.PbsController.insertIntoDB);
 router.delete('/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN), pbs_controller_1.PbsController.singleDeleteFromDB);
-router.get('/', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), pbs_controller_1.PbsController.getAllFromDB);
-router.get('/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), pbs_controller_1.PbsController.getDataById);
+router.get('/', 
+// auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
+pbs_controller_1.PbsController.getAllFromDB);
+router.get('/:pbsCode', 
+// auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
+pbs_controller_1.PbsController.getDataById);
 exports.PbsRoutes = router;

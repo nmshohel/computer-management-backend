@@ -247,23 +247,19 @@ CREATE TABLE "suppliers" (
 );
 
 -- CreateTable
-CREATE TABLE "survicings" (
+CREATE TABLE "servicings" (
     "id" TEXT NOT NULL,
-    "survicingCost" TEXT NOT NULL,
-    "survicingDate" TIMESTAMP(3) NOT NULL,
+    "servicingCost" TEXT NOT NULL,
+    "servicingDate" TIMESTAMP(3) NOT NULL,
     "description" TEXT NOT NULL,
     "serviceByMobileNo" TEXT NOT NULL,
     "identificationNo" TEXT NOT NULL,
     "suplierId" TEXT NOT NULL,
-    "revenueItemId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "survicings_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "servicings_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_pbsTransferRequestBy_key" ON "users"("pbsTransferRequestBy");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "employees_mobileNo_key" ON "employees"("mobileNo");
@@ -312,6 +308,12 @@ ALTER TABLE "users" ADD CONSTRAINT "users_pbsTransferRequestBy_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_pbsTransferRequestedPbsCode_fkey" FOREIGN KEY ("pbsTransferRequestedPbsCode") REFERENCES "pbs"("pbsCode") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_requestedZonalCode_fkey" FOREIGN KEY ("requestedZonalCode") REFERENCES "zonals"("zonalCode") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_zonalTransferRequestBy_fkey" FOREIGN KEY ("zonalTransferRequestBy") REFERENCES "employees"("mobileNo") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_pbsCode_fkey" FOREIGN KEY ("pbsCode") REFERENCES "pbs"("pbsCode") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -443,13 +445,10 @@ ALTER TABLE "revenue_item" ADD CONSTRAINT "revenue_item_certifiedByMobileNo_fkey
 ALTER TABLE "suppliers" ADD CONSTRAINT "suppliers_pbsCode_fkey" FOREIGN KEY ("pbsCode") REFERENCES "pbs"("pbsCode") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "survicings" ADD CONSTRAINT "survicings_serviceByMobileNo_fkey" FOREIGN KEY ("serviceByMobileNo") REFERENCES "users"("mobileNo") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "servicings" ADD CONSTRAINT "servicings_serviceByMobileNo_fkey" FOREIGN KEY ("serviceByMobileNo") REFERENCES "users"("mobileNo") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "survicings" ADD CONSTRAINT "survicings_identificationNo_fkey" FOREIGN KEY ("identificationNo") REFERENCES "capital_item"("identificationNo") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "servicings" ADD CONSTRAINT "servicings_identificationNo_fkey" FOREIGN KEY ("identificationNo") REFERENCES "capital_item"("identificationNo") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "survicings" ADD CONSTRAINT "survicings_suplierId_fkey" FOREIGN KEY ("suplierId") REFERENCES "suppliers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "survicings" ADD CONSTRAINT "survicings_revenueItemId_fkey" FOREIGN KEY ("revenueItemId") REFERENCES "revenue_item"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "servicings" ADD CONSTRAINT "servicings_suplierId_fkey" FOREIGN KEY ("suplierId") REFERENCES "suppliers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

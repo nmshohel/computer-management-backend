@@ -61,8 +61,8 @@ const inertIntoDB = (data, authUser) => __awaiter(void 0, void 0, void 0, functi
             assignTo: true,
             approveBy: true,
             received: true,
-            certifiedBy: true
-        }
+            certifiedBy: true,
+        },
     });
     return result;
 });
@@ -119,10 +119,12 @@ const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, vo
                 createdAt: 'desc',
             },
     });
-    // const total = await prisma.capitalItem.count();
+    const total = yield prisma_1.default.capitalItem.count({
+        where: Object.assign(Object.assign({}, whereCondition), { activeOrcondemnationStatus: 'a', pbsCode: pbsCode }),
+    });
     return {
         meta: {
-            total: result.length,
+            total: total,
             page,
             limit,
         },
@@ -182,7 +184,9 @@ const getAllNotAssignFromDB = (filters, options, pbsCode) => __awaiter(void 0, v
                 createdAt: 'desc',
             },
     });
-    const total = yield prisma_1.default.capitalItem.count({});
+    const total = yield prisma_1.default.capitalItem.count({
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode, assignToMobileNo: null }),
+    });
     return {
         meta: {
             total,
@@ -245,7 +249,9 @@ const getAllNotApproveFromDB = (filters, options, pbsCode) => __awaiter(void 0, 
                 createdAt: 'desc',
             },
     });
-    const total = yield prisma_1.default.capitalItem.count();
+    const total = yield prisma_1.default.capitalItem.count({
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode, approveByMobileNo: null }),
+    });
     return {
         meta: {
             total,
@@ -308,7 +314,9 @@ const getAllNotCertifyFromDB = (filters, options, pbsCode) => __awaiter(void 0, 
                 createdAt: 'desc',
             },
     });
-    const total = yield prisma_1.default.capitalItem.count();
+    const total = yield prisma_1.default.capitalItem.count({
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode, certifiedByMobileNo: null }),
+    });
     return {
         meta: {
             total,
@@ -374,12 +382,12 @@ const getAllNotReveiveFromDB = (filters, options, pbsCode, user) => __awaiter(vo
                 createdAt: 'desc',
             },
     });
-    // const total = await prisma.capitalItem.count();
-    console.log('result', result.length);
-    // const total = andConditions.length;
+    const total = yield prisma_1.default.capitalItem.count({
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode, receivedByMobileNo: null, assignToMobileNo: user.mobileNo }),
+    });
     return {
         meta: {
-            total: result.length,
+            total: total,
             page,
             limit,
         },
@@ -543,7 +551,7 @@ const getAllFromDBByAssignTo = (filters, options, pbsCode, user) => __awaiter(vo
     //   andConditions.length > 0 ? { AND: andConditions } : {};
     const whereCondition = andConditions.length > 0 ? { AND: andConditions } : {};
     const result = yield prisma_1.default.capitalItem.findMany({
-        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode, receivedByMobileNo: user.mobileNo }),
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode, receivedByMobileNo: user === null || user === void 0 ? void 0 : user.mobileNo }),
         skip,
         take: limit,
         include: {
@@ -570,12 +578,12 @@ const getAllFromDBByAssignTo = (filters, options, pbsCode, user) => __awaiter(vo
                 createdAt: 'desc',
             },
     });
-    // const total = await prisma.capitalItem.count();
-    console.log('result', result.length);
-    // const total = andConditions.length;
+    const total = yield prisma_1.default.capitalItem.count({
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode, receivedByMobileNo: user === null || user === void 0 ? void 0 : user.mobileNo }),
+    });
     return {
         meta: {
-            total: result.length,
+            total: total,
             page,
             limit,
         },

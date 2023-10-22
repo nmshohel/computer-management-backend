@@ -32,7 +32,8 @@ const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const pbsCode = req.params.id;
+    var _a;
+    const pbsCode = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.pbsCode;
     const filters = (0, pick_1.default)(req.query, capitalitem_constrant_1.capitalItemFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield capitalitem_service_1.CapitalItemService.getAllFromDB(filters, options, pbsCode);
@@ -45,7 +46,8 @@ const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getAllNotAssignFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const pbsCode = req.params.id;
+    var _b;
+    const pbsCode = (_b = req === null || req === void 0 ? void 0 : req.params) === null || _b === void 0 ? void 0 : _b.pbsCode;
     const filters = (0, pick_1.default)(req.query, capitalitem_constrant_1.capitalItemFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield capitalitem_service_1.CapitalItemService.getAllNotAssignFromDB(filters, options, pbsCode);
@@ -58,7 +60,8 @@ const getAllNotAssignFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(
     });
 }));
 const getAllNotApproveFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const pbsCode = req.params.id;
+    var _c;
+    const pbsCode = (_c = req === null || req === void 0 ? void 0 : req.params) === null || _c === void 0 ? void 0 : _c.pbsCode;
     const filters = (0, pick_1.default)(req.query, capitalitem_constrant_1.capitalItemFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield capitalitem_service_1.CapitalItemService.getAllNotApproveFromDB(filters, options, pbsCode);
@@ -71,7 +74,8 @@ const getAllNotApproveFromDB = (0, catchAsync_1.default)((req, res) => __awaiter
     });
 }));
 const getAllNotCertifyFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const pbsCode = req.params.id;
+    var _d;
+    const pbsCode = (_d = req === null || req === void 0 ? void 0 : req.params) === null || _d === void 0 ? void 0 : _d.pbsCode;
     const filters = (0, pick_1.default)(req.query, capitalitem_constrant_1.capitalItemFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield capitalitem_service_1.CapitalItemService.getAllNotCertifyFromDB(filters, options, pbsCode);
@@ -84,7 +88,8 @@ const getAllNotCertifyFromDB = (0, catchAsync_1.default)((req, res) => __awaiter
     });
 }));
 const getAllNotReceiveFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const pbsCode = req.params.id;
+    var _e;
+    const pbsCode = (_e = req === null || req === void 0 ? void 0 : req.params) === null || _e === void 0 ? void 0 : _e.id;
     const filters = (0, pick_1.default)(req.query, capitalitem_constrant_1.capitalItemFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield capitalitem_service_1.CapitalItemService.getAllNotReveiveFromDB(filters, options, pbsCode, req.user);
@@ -97,7 +102,8 @@ const getAllNotReceiveFromDB = (0, catchAsync_1.default)((req, res) => __awaiter
     });
 }));
 const getDataById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.params.id;
+    var _f;
+    const id = (_f = req === null || req === void 0 ? void 0 : req.params) === null || _f === void 0 ? void 0 : _f.id;
     const result = yield capitalitem_service_1.CapitalItemService.getDataById(id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -127,8 +133,8 @@ const insertAssignToDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 
     });
 }));
 const insertApproveToDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const authUserMobileNo = (_a = req.user) === null || _a === void 0 ? void 0 : _a.mobileNo;
+    var _g;
+    const authUserMobileNo = (_g = req === null || req === void 0 ? void 0 : req.user) === null || _g === void 0 ? void 0 : _g.mobileNo;
     const result = yield capitalitem_service_1.CapitalItemService.insertApproveToDB(authUserMobileNo, req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -138,8 +144,8 @@ const insertApproveToDB = (0, catchAsync_1.default)((req, res) => __awaiter(void
     });
 }));
 const insertcertifyToDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
-    const authUserMobileNo = (_b = req.user) === null || _b === void 0 ? void 0 : _b.mobileNo;
+    var _h;
+    const authUserMobileNo = (_h = req === null || req === void 0 ? void 0 : req.user) === null || _h === void 0 ? void 0 : _h.mobileNo;
     const result = yield capitalitem_service_1.CapitalItemService.insertCertifyToDB(authUserMobileNo, req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -149,8 +155,8 @@ const insertcertifyToDB = (0, catchAsync_1.default)((req, res) => __awaiter(void
     });
 }));
 const insertReceiveToDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const authUserMobileNo = (_c = req.user) === null || _c === void 0 ? void 0 : _c.mobileNo;
+    var _j;
+    const authUserMobileNo = (_j = req === null || req === void 0 ? void 0 : req.user) === null || _j === void 0 ? void 0 : _j.mobileNo;
     const result = yield capitalitem_service_1.CapitalItemService.insertReceiveToDB(authUserMobileNo, req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -160,7 +166,8 @@ const insertReceiveToDB = (0, catchAsync_1.default)((req, res) => __awaiter(void
     });
 }));
 const getAllFromDBByAssignTo = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const pbsCode = req.params.id;
+    var _k;
+    const pbsCode = (_k = req === null || req === void 0 ? void 0 : req.params) === null || _k === void 0 ? void 0 : _k.pbsCode;
     const filters = (0, pick_1.default)(req.query, capitalitem_constrant_1.capitalItemFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield capitalitem_service_1.CapitalItemService.getAllFromDBByAssignTo(filters, options, pbsCode, req.user);

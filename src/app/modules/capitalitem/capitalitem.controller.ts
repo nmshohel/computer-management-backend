@@ -22,7 +22,7 @@ const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getAllFromDB = catchAsync(async (req, res) => {
-  const pbsCode = req.params.id;
+  const pbsCode: string = req?.params?.pbsCode;
   const filters = pick(req.query, capitalItemFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
@@ -40,7 +40,7 @@ const getAllFromDB = catchAsync(async (req, res) => {
   });
 });
 const getAllNotAssignFromDB = catchAsync(async (req, res) => {
-  const pbsCode = req.params.id;
+  const pbsCode = req?.params?.pbsCode;
   const filters = pick(req.query, capitalItemFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
@@ -58,7 +58,7 @@ const getAllNotAssignFromDB = catchAsync(async (req, res) => {
   });
 });
 const getAllNotApproveFromDB = catchAsync(async (req, res) => {
-  const pbsCode = req.params.id;
+  const pbsCode = req?.params?.pbsCode;
   const filters = pick(req.query, capitalItemFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
@@ -77,7 +77,7 @@ const getAllNotApproveFromDB = catchAsync(async (req, res) => {
 });
 
 const getAllNotCertifyFromDB = catchAsync(async (req, res) => {
-  const pbsCode = req.params.id;
+  const pbsCode = req?.params?.pbsCode;
   const filters = pick(req.query, capitalItemFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
@@ -96,7 +96,7 @@ const getAllNotCertifyFromDB = catchAsync(async (req, res) => {
 });
 
 const getAllNotReceiveFromDB = catchAsync(async (req, res) => {
-  const pbsCode = req.params.id;
+  const pbsCode = req?.params?.id;
   const filters = pick(req.query, capitalItemFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
@@ -116,7 +116,7 @@ const getAllNotReceiveFromDB = catchAsync(async (req, res) => {
 });
 
 const getDataById = catchAsync(async (req, res) => {
-  const id = req.params.id;
+  const id = req?.params?.id;
   const result = await CapitalItemService.getDataById(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -150,7 +150,7 @@ const insertAssignToDB = catchAsync(async (req, res) => {
   });
 });
 const insertApproveToDB = catchAsync(async (req, res) => {
-  const authUserMobileNo = req.user?.mobileNo;
+  const authUserMobileNo = req?.user?.mobileNo;
   const result = await CapitalItemService.insertApproveToDB(
     authUserMobileNo,
     req.params.id
@@ -163,7 +163,7 @@ const insertApproveToDB = catchAsync(async (req, res) => {
   });
 });
 const insertcertifyToDB = catchAsync(async (req, res) => {
-  const authUserMobileNo = req.user?.mobileNo;
+  const authUserMobileNo = req?.user?.mobileNo;
   const result = await CapitalItemService.insertCertifyToDB(
     authUserMobileNo,
     req.params.id
@@ -176,7 +176,7 @@ const insertcertifyToDB = catchAsync(async (req, res) => {
   });
 });
 const insertReceiveToDB = catchAsync(async (req, res) => {
-  const authUserMobileNo = req.user?.mobileNo;
+  const authUserMobileNo = req?.user?.mobileNo;
   const result = await CapitalItemService.insertReceiveToDB(
     authUserMobileNo,
     req.params.id
@@ -190,7 +190,7 @@ const insertReceiveToDB = catchAsync(async (req, res) => {
 });
 
 const getAllFromDBByAssignTo = catchAsync(async (req, res) => {
-  const pbsCode = req.params.id;
+  const pbsCode = req?.params?.pbsCode;
   const filters = pick(req.query, capitalItemFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 

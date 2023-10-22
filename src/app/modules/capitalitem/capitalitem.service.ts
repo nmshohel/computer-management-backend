@@ -28,24 +28,24 @@ const inertIntoDB = async (
   }
   const result = prisma.capitalItem.create({
     data: data,
-    include:{
-      model:true,
-      brand:true,
-      supplier:true,
-      itemType:true,
-      category:true,
-      subCategory:true,
-      pbs:true,
-      addBy:true,
-      zonals:true,
-      complainCenter:true,
-      substation:true,
-      issueBy:true,
-      assignTo:true,
-      approveBy:true,
-      received:true,
-      certifiedBy:true
-    }
+    include: {
+      model: true,
+      brand: true,
+      supplier: true,
+      itemType: true,
+      category: true,
+      subCategory: true,
+      pbs: true,
+      addBy: true,
+      zonals: true,
+      complainCenter: true,
+      substation: true,
+      issueBy: true,
+      assignTo: true,
+      approveBy: true,
+      received: true,
+      certifiedBy: true,
+    },
   });
   return result;
 };
@@ -57,7 +57,6 @@ const getAllFromDB = async (
 ): Promise<IGenericResponse<CapitalItem[]>> => {
   const { page, limit, skip } = paginationHelpers.calculatePagination(options);
   // eslint-disable-next-line no-unused-vars
-
   const { searchTerm, ...filtersData } = filters;
   const andConditions = [];
   if (searchTerm) {
@@ -116,10 +115,17 @@ const getAllFromDB = async (
             createdAt: 'desc',
           },
   });
-  // const total = await prisma.capitalItem.count();
+
+  const total = await prisma.capitalItem.count({
+    where: {
+      ...whereCondition,
+      activeOrcondemnationStatus: 'a',
+      pbsCode: pbsCode,
+    },
+  });
   return {
     meta: {
-      total: result.length,
+      total: total,
       page,
       limit,
     },
@@ -192,7 +198,13 @@ const getAllNotAssignFromDB = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.capitalItem.count({});
+  const total = await prisma.capitalItem.count({
+    where: {
+      ...whereCondition,
+      pbsCode: pbsCode,
+      assignToMobileNo: null,
+    },
+  });
   return {
     meta: {
       total,
@@ -268,7 +280,13 @@ const getAllNotApproveFromDB = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.capitalItem.count();
+  const total = await prisma.capitalItem.count({
+    where: {
+      ...whereCondition,
+      pbsCode: pbsCode,
+      approveByMobileNo: null,
+    },
+  });
   return {
     meta: {
       total,
@@ -344,7 +362,13 @@ const getAllNotCertifyFromDB = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.capitalItem.count();
+  const total = await prisma.capitalItem.count({
+    where: {
+      ...whereCondition,
+      pbsCode: pbsCode,
+      certifiedByMobileNo: null,
+    },
+  });
   return {
     meta: {
       total,
@@ -426,12 +450,18 @@ const getAllNotReveiveFromDB = async (
             createdAt: 'desc',
           },
   });
-  // const total = await prisma.capitalItem.count();
-  console.log('result', result.length);
-  // const total = andConditions.length;
+  const total = await prisma.capitalItem.count({
+    where: {
+      ...whereCondition,
+      pbsCode: pbsCode,
+      receivedByMobileNo: null,
+      assignToMobileNo: user.mobileNo,
+    },
+  });
+
   return {
     meta: {
-      total: result.length,
+      total: total,
       page,
       limit,
     },
@@ -630,7 +660,7 @@ const getAllFromDBByAssignTo = async (
     where: {
       ...whereCondition,
       pbsCode: pbsCode,
-      receivedByMobileNo: user.mobileNo,
+      receivedByMobileNo: user?.mobileNo,
     },
     skip,
     take: limit,
@@ -659,12 +689,17 @@ const getAllFromDBByAssignTo = async (
             createdAt: 'desc',
           },
   });
-  // const total = await prisma.capitalItem.count();
-  console.log('result', result.length);
-  // const total = andConditions.length;
+  const total = await prisma.capitalItem.count({
+    where: {
+      ...whereCondition,
+      pbsCode: pbsCode,
+      receivedByMobileNo: user?.mobileNo,
+    },
+  });
+
   return {
     meta: {
-      total: result.length,
+      total: total,
       page,
       limit,
     },

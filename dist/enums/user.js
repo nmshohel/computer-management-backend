@@ -10,4 +10,4 @@ var ENUM_USER_ROLE;
     ENUM_USER_ROLE["STORE_HEAD"] = "storeHead";
     ENUM_USER_ROLE["INCHARGE"] = "incharge";
     ENUM_USER_ROLE["USER"] = "user";
-})(ENUM_USER_ROLE = exports.ENUM_USER_ROLE || (exports.ENUM_USER_ROLE = {}));
+})(ENUM_USER_ROLE || (exports.ENUM_USER_ROLE = ENUM_USER_ROLE = {}));

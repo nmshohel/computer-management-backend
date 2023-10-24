@@ -20,8 +20,9 @@ const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
 const getAllFromDB = catchAsync(async (req, res) => {
   const filters = pick(req.query, survicingFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+  const authUserPbsCode:string=(req as any).user?.pbsCode
 
-  const result = await ServicingService.getAllFromDB(filters, options);
+  const result = await ServicingService.getAllFromDB(filters, options,authUserPbsCode);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

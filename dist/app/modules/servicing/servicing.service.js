@@ -40,9 +40,10 @@ const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 // get all supplier
-const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllFromDB = (filters, options, authUserPbsCode) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelpers.calculatePagination(options);
     // eslint-disable-next-line no-unused-vars
+    // console.log(authUser)
     const { searchTerm } = filters, filtersData = __rest(filters, ["searchTerm"]);
     const andConditions = [];
     if (searchTerm) {
@@ -64,9 +65,10 @@ const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, fun
             })),
         });
     }
+    console.log("authUserPbsCode", authUserPbsCode);
     const whereCondition = andConditions.length > 0 ? { AND: andConditions } : {};
     const result = yield prisma_1.default.servicing.findMany({
-        where: Object.assign({}, whereCondition),
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: authUserPbsCode }),
         include: { supplier: true, serviceByuser: true, capitalItems: true },
         skip,
         take: limit,
@@ -78,7 +80,7 @@ const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, fun
                 createdAt: 'desc',
             },
     });
-    const total = yield prisma_1.default.servicing.count();
+    const total = yield prisma_1.default.servicing.count({ where: Object.assign(Object.assign({}, whereCondition), { pbsCode: authUserPbsCode }), });
     return {
         meta: {
             total,

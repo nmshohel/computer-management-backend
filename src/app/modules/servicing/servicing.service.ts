@@ -21,11 +21,12 @@ const inertIntoDB = async (data: Servicing): Promise<Servicing> => {
 // get all supplier
 const getAllFromDB = async (
   filters: survicingFilterRequest,
-  options: IPaginationOptions
+  options: IPaginationOptions,
+  authUserPbsCode:string,
 ): Promise<IGenericResponse<Servicing[]>> => {
   const { page, limit, skip } = paginationHelpers.calculatePagination(options);
   // eslint-disable-next-line no-unused-vars
-
+// console.log(authUser)
   const { searchTerm, ...filtersData } = filters;
   const andConditions = [];
   if (searchTerm) {
@@ -48,12 +49,14 @@ const getAllFromDB = async (
       })),
     });
   }
-
+console.log("authUserPbsCode",authUserPbsCode)
   const whereCondition: Prisma.ServicingWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
   const result = await prisma.servicing.findMany({
     where: {
       ...whereCondition,
+      pbsCode:authUserPbsCode
+      
     },
     include: { supplier: true, serviceByuser: true, capitalItems: true },
     skip,
@@ -68,7 +71,11 @@ const getAllFromDB = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.servicing.count();
+  const total = await prisma.servicing.count({    where: {
+    ...whereCondition,
+    pbsCode:authUserPbsCode
+    
+  },});
   return {
     meta: {
       total,

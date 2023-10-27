@@ -115,6 +115,16 @@ const getAllNotReceiveFromDB = catchAsync(async (req, res) => {
   });
 });
 
+const getDataByIdentificationNo = catchAsync(async (req, res) => {
+  const identificationNo = req?.params?.identificationNo;
+  const result = await CapitalItemService.getDataByIdentificationNo(identificationNo);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'CapitalItem data fatched',
+    data: result,
+  });
+});
 const getDataById = catchAsync(async (req, res) => {
   const id = req?.params?.id;
   const result = await CapitalItemService.getDataById(id);
@@ -222,4 +232,5 @@ export const CapitalItemController = {
   insertReceiveToDB,
   getAllNotReceiveFromDB,
   getAllFromDBByAssignTo,
+  getDataByIdentificationNo
 };

@@ -368,8 +368,8 @@ model Servicing {
   capitalItems      CapitalItem @relation(fields: [identificationNo], references: [identificationNo])
   suplierId         String
   supplier          Supplier    @relation(fields: [suplierId], references: [id])
-  pbsCode           String?
-  pbs               PBS?        @relation(fields: [pbsCode], references: [pbsCode])
+  pbsCode           String
+  pbs               PBS         @relation(fields: [pbsCode], references: [pbsCode])
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 

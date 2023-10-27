@@ -101,19 +101,43 @@ const getAllFromDB = async (
       category: true,
       subCategory: true,
       supplier: true,
-      issueBy: true,
-      addBy: true,
-      approveBy: true,
-      assignTo: true,
+      survicings:true,
+      issueBy: {
+        include:{
+          employee:true
+        }
+      },
+      addBy:{
+        include:{
+          employee:true
+        }
+      },
+      approveBy: {
+        include:{
+          employee:true
+        }
+      },
+      assignTo: {
+        include:{
+          employee:true
+        }
+      },
     },
-    orderBy:
-      options.sortBy && options.sortOrder
-        ? {
-            [options.sortBy]: options.sortOrder,
-          }
-        : {
-            createdAt: 'desc',
-          },
+    // orderBy:
+    //   options.sortBy && options.sortOrder
+    //     ? {
+    //         [options.sortBy]: options.sortOrder,
+    //       }
+    //     : {
+    //         zonalCode: 'desc',
+    //       },
+    orderBy:[{
+      zonalCode:'asc'
+    },
+    {
+      assignToMobileNo:'asc'
+    }
+  ]
   });
 
   const total = await prisma.capitalItem.count({
@@ -476,6 +500,105 @@ const getDataById = async (id: string): Promise<CapitalItem | null> => {
   });
   return result;
 };
+const getDataByIdentificationNo = async (identificationNo: string): Promise<CapitalItem | null> => {
+  console.log("identificationNo",identificationNo)
+  const result = await prisma.capitalItem.findUnique({
+    where: {
+      identificationNo: identificationNo,
+    },
+    include: {
+      model: true,
+      brand: true,
+      pbs: true,
+      zonals: true,
+      complainCenter: true,
+      substation: true,
+      itemType: true,
+      category: true,
+      subCategory: true,
+      supplier: true,
+      survicings:{
+        include:{
+          serviceByuser:true,
+          supplier:true,
+        
+        }
+      },
+      revenueItem:{
+        include:{
+          model:true,
+          brand:true,
+          itemType:true,
+          category:true,
+          subCategory:true,
+          supplier:true,
+          zonals:true,
+          addBy:{
+            include:{
+              employee:true
+            }
+          },
+          issueBy:{
+            include:{
+              employee:true
+            }
+          },
+          assignTo:{
+            include:{
+              employee:true
+            }
+          },
+          approveBy:{
+            include:{
+              employee:true
+            }
+          },
+        }
+      },
+      issueBy: {
+        include:{
+          employee:true
+        }
+      },
+      addBy:{
+        include:{
+          employee:true
+        }
+      },
+      approveBy: {
+        include:{
+          employee:true
+        }
+      },
+      assignTo: {
+        include:{
+          employee:true
+        }
+      },
+    },
+    
+  });
+
+  const inputDate= result?.purchasedate; // Replace this with the actual date value
+
+// Create a Date object from the input date string
+if(!inputDate)
+{
+  throw new ApiError(httpStatus.BAD_REQUEST, "Purchase Date Not Found")
+}
+const date = new Date(inputDate);
+
+// Get day, month, and year components
+const day = date.getDate().toString().padStart(2, '0');
+const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-indexed, so we add 1.
+const year = date.getFullYear();
+
+// Create the formatted date string
+const formattedDate = `${day}-${month}-${year}`;
+  result.purchasedate=formattedDate
+  
+  return result;
+};
 const updateIntoDB = async (
   id: string,
   payload: Partial<CapitalItem>
@@ -720,4 +843,5 @@ export const CapitalItemService = {
   insertReceiveToDB,
   getAllNotReveiveFromDB,
   getAllFromDBByAssignTo,
+  getDataByIdentificationNo
 };

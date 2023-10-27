@@ -106,18 +106,43 @@ const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, vo
             category: true,
             subCategory: true,
             supplier: true,
-            issueBy: true,
-            addBy: true,
-            approveBy: true,
-            assignTo: true,
-        },
-        orderBy: options.sortBy && options.sortOrder
-            ? {
-                [options.sortBy]: options.sortOrder,
-            }
-            : {
-                createdAt: 'desc',
+            survicings: true,
+            issueBy: {
+                include: {
+                    employee: true
+                }
             },
+            addBy: {
+                include: {
+                    employee: true
+                }
+            },
+            approveBy: {
+                include: {
+                    employee: true
+                }
+            },
+            assignTo: {
+                include: {
+                    employee: true
+                }
+            },
+        },
+        // orderBy:
+        //   options.sortBy && options.sortOrder
+        //     ? {
+        //         [options.sortBy]: options.sortOrder,
+        //       }
+        //     : {
+        //         zonalCode: 'desc',
+        //       },
+        orderBy: [{
+                zonalCode: 'asc'
+            },
+            {
+                assignToMobileNo: 'asc'
+            }
+        ]
     });
     const total = yield prisma_1.default.capitalItem.count({
         where: Object.assign(Object.assign({}, whereCondition), { activeOrcondemnationStatus: 'a', pbsCode: pbsCode }),
@@ -402,6 +427,84 @@ const getDataById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const getDataByIdentificationNo = (identificationNo) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("identificationNo", identificationNo);
+    const result = yield prisma_1.default.capitalItem.findUnique({
+        where: {
+            identificationNo: identificationNo,
+        },
+        include: {
+            model: true,
+            brand: true,
+            pbs: true,
+            zonals: true,
+            complainCenter: true,
+            substation: true,
+            itemType: true,
+            category: true,
+            subCategory: true,
+            supplier: true,
+            survicings: {
+                include: {
+                    serviceByuser: true,
+                    supplier: true,
+                }
+            },
+            revenueItem: {
+                include: {
+                    model: true,
+                    brand: true,
+                    itemType: true,
+                    category: true,
+                    subCategory: true,
+                    supplier: true,
+                    zonals: true,
+                    addBy: {
+                        include: {
+                            employee: true
+                        }
+                    },
+                    issueBy: {
+                        include: {
+                            employee: true
+                        }
+                    },
+                    assignTo: {
+                        include: {
+                            employee: true
+                        }
+                    },
+                    approveBy: {
+                        include: {
+                            employee: true
+                        }
+                    },
+                }
+            },
+            issueBy: {
+                include: {
+                    employee: true
+                }
+            },
+            addBy: {
+                include: {
+                    employee: true
+                }
+            },
+            approveBy: {
+                include: {
+                    employee: true
+                }
+            },
+            assignTo: {
+                include: {
+                    employee: true
+                }
+            },
+        },
+    });
+    return result;
+});
 const updateIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.capitalItem.update({
         where: {
@@ -604,4 +707,5 @@ exports.CapitalItemService = {
     insertReceiveToDB,
     getAllNotReveiveFromDB,
     getAllFromDBByAssignTo,
+    getDataByIdentificationNo
 };

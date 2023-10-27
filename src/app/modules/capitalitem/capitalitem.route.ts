@@ -24,6 +24,11 @@ router.get(
   auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   CapitalItemController.getDataById
 );
+router.get(
+  '/identification-no/:identificationNo',
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
+  CapitalItemController.getDataByIdentificationNo
+);
 router.patch(
   '/:id',
   auth(ADMIN, SUPER_ADMIN),

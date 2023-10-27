@@ -15,6 +15,7 @@ const router = express_1.default.Router();
 router.post('/create-capital-item', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(capitalitem_validation_1.CapitalItemValidation.create), capitalitem_controller_1.CapitalItemController.insertIntoDB);
 router.get('/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), capitalitem_controller_1.CapitalItemController.getAllFromDB);
 router.get('/capital/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), capitalitem_controller_1.CapitalItemController.getDataById);
+router.get('/identification-no/:identificationNo', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), capitalitem_controller_1.CapitalItemController.getDataByIdentificationNo);
 router.patch('/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(capitalitem_validation_1.CapitalItemValidation.update), capitalitem_controller_1.CapitalItemController.updateIntoDB);
 router.post('/assign-capital-item/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(capitalitem_validation_1.CapitalItemValidation.createAssign), capitalitem_controller_1.CapitalItemController.insertAssignToDB);
 router.get('/not-assign/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN), capitalitem_controller_1.CapitalItemController.getAllNotAssignFromDB);

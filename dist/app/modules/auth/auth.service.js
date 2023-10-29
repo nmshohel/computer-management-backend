@@ -48,9 +48,23 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     //     expiresIn: config.jwt.expires_in,
     //   }
     // );
+    console.log("isUserExist", isUserExist);
+    const isEmployee = yield prisma_1.default.employee.findUnique({
+        where: {
+            mobileNo: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.mobileNo
+        }
+    });
+    if (!isEmployee) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Employee information not found");
+    }
+    console.log("employeeInfo", isEmployee);
     const { mobileNo, role, pbsCode, zonalCode, complainCode, substationCode } = isUserExist;
+    const { name, designation, photoUrl } = isEmployee;
     const userInfo = {
         mobileNo,
+        name,
+        designation,
+        photoUrl,
         role,
         zonalCode,
         complainCode,
@@ -92,9 +106,20 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     if (!isUserExist) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'User does not exist');
     }
+    const isEmployee = yield prisma_1.default.employee.findUnique({
+        where: {
+            mobileNo: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.mobileNo
+        }
+    });
+    if (!isEmployee) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Employee information not found");
+    }
     // genereate token
     const newAccessToken = jwtHelpers_1.jwtHelpers.createToken({
         mobileNo: isUserExist.mobileNo,
+        name: isEmployee.name,
+        designation: isEmployee.designation,
+        photoUrl: isEmployee.photoUrl,
         role: isUserExist.role,
         pbsCode: isUserExist.pbsCode,
         zonalCode: isUserExist.zonalCode,

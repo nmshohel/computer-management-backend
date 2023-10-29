@@ -503,6 +503,19 @@ const getDataByIdentificationNo = (identificationNo) => __awaiter(void 0, void 0
             },
         },
     });
+    const inputDate = result === null || result === void 0 ? void 0 : result.purchasedate; // Replace this with the actual date value
+    // Create a Date object from the input date string
+    if (!inputDate) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Purchase Date Not Found");
+    }
+    const date = new Date(inputDate);
+    // Get day, month, and year components
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-indexed, so we add 1.
+    const year = date.getFullYear();
+    // Create the formatted date string
+    const formattedDate = `${day}-${month}-${year}`;
+    result.purchasedate = formattedDate;
     return result;
 });
 const updateIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {

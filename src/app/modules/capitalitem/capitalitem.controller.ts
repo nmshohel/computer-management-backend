@@ -22,6 +22,7 @@ const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getAllFromDB = catchAsync(async (req, res) => {
+  console.log("user", req.user)
   const pbsCode: string = req?.params?.pbsCode;
   const filters = pick(req.query, capitalItemFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);

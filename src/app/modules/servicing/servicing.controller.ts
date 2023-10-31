@@ -8,7 +8,8 @@ import { survicingFilterableFields } from './servicing.constrant';
 import { ServicingService } from './servicing.service';
 
 const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
-  const result = await ServicingService.inertIntoDB(req.body);
+  const authPbsCode:string=(req as any).user?.pbsCode
+  const result = await ServicingService.inertIntoDB(req.body,authPbsCode);
   sendResponse<Servicing>(res, {
     statusCode: httpStatus.OK,
     success: true,

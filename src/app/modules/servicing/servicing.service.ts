@@ -7,7 +7,8 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 import { survicingSearchableFields } from './servicing.constrant';
 import { survicingFilterRequest } from './servicing.interface';
-const inertIntoDB = async (data: Servicing): Promise<Servicing> => {
+const inertIntoDB = async (data: Servicing,pbsCode:string): Promise<Servicing> => {
+  data.pbsCode=pbsCode
   const result = prisma.servicing.create({
     data: data,
     include:{
@@ -49,7 +50,7 @@ const getAllFromDB = async (
       })),
     });
   }
-console.log("authUserPbsCode",authUserPbsCode)
+// console.log("authUserPbsCode",authUserPbsCode)
   const whereCondition: Prisma.ServicingWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
   const result = await prisma.servicing.findMany({

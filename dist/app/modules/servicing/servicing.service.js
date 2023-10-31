@@ -28,7 +28,8 @@ exports.ServicingService = void 0;
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const servicing_constrant_1 = require("./servicing.constrant");
-const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
+const inertIntoDB = (data, pbsCode) => __awaiter(void 0, void 0, void 0, function* () {
+    data.pbsCode = pbsCode;
     const result = prisma_1.default.servicing.create({
         data: data,
         include: {
@@ -65,7 +66,7 @@ const getAllFromDB = (filters, options, authUserPbsCode) => __awaiter(void 0, vo
             })),
         });
     }
-    console.log("authUserPbsCode", authUserPbsCode);
+    // console.log("authUserPbsCode",authUserPbsCode)
     const whereCondition = andConditions.length > 0 ? { AND: andConditions } : {};
     const result = yield prisma_1.default.servicing.findMany({
         where: Object.assign(Object.assign({}, whereCondition), { pbsCode: authUserPbsCode }),

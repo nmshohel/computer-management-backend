@@ -20,7 +20,9 @@ const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const servicing_constrant_1 = require("./servicing.constrant");
 const servicing_service_1 = require("./servicing.service");
 const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield servicing_service_1.ServicingService.inertIntoDB(req.body);
+    var _a;
+    const authPbsCode = (_a = req.user) === null || _a === void 0 ? void 0 : _a.pbsCode;
+    const result = yield servicing_service_1.ServicingService.inertIntoDB(req.body, authPbsCode);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -29,10 +31,10 @@ const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _b;
     const filters = (0, pick_1.default)(req.query, servicing_constrant_1.survicingFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-    const authUserPbsCode = (_a = req.user) === null || _a === void 0 ? void 0 : _a.pbsCode;
+    const authUserPbsCode = (_b = req.user) === null || _b === void 0 ? void 0 : _b.pbsCode;
     const result = yield servicing_service_1.ServicingService.getAllFromDB(filters, options, authUserPbsCode);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,

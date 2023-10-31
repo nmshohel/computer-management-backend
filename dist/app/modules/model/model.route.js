@@ -15,4 +15,5 @@ const router = express_1.default.Router();
 router.post('/create-model', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(model_validation_1.ModelValidation.create), model_controller_1.ModelController.insertIntoDB);
 router.get('/', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), model_controller_1.ModelController.getAllFromDB);
 router.get('/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), model_controller_1.ModelController.getDataById);
+router.patch('/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), (0, validateRequest_1.default)(model_validation_1.ModelValidation.update), model_controller_1.ModelController.updateIntoDB);
 exports.ModelRoutes = router;

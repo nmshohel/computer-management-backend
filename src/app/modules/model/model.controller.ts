@@ -16,7 +16,16 @@ const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
+const updateIntoDB: RequestHandler = catchAsync(async (req, res) => {
+  const id:string=req.params.id
+  const result = await ModelService.updateIntoDB(req.body,id);
+  sendResponse<Partial<Model>>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Model Updated Successfully',
+    data: result,
+  });
+});
 const getAllFromDB = catchAsync(async (req, res) => {
   const filters = pick(req.query, modelFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
@@ -46,4 +55,5 @@ export const ModelController = {
   insertIntoDB,
   getAllFromDB,
   getDataById,
+  updateIntoDB
 };

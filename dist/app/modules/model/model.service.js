@@ -37,6 +37,13 @@ const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const updateIntoDB = (data, id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = prisma_1.default.model.update({
+        where: { id: id },
+        data: data,
+    });
+    return result;
+});
 const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelpers.calculatePagination(options);
     // eslint-disable-next-line no-unused-vars
@@ -99,4 +106,5 @@ exports.ModelService = {
     inertIntoDB,
     getAllFromDB,
     getDataById,
+    updateIntoDB
 };

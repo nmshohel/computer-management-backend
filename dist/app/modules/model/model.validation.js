@@ -12,6 +12,11 @@ const create = zod_1.z.object({
         }),
     }),
 });
+const update = zod_1.z.object({
+    body: zod_1.z.object({
+        modelName: zod_1.z.string().optional(),
+    }),
+});
 exports.ModelValidation = {
-    create,
+    create, update
 };

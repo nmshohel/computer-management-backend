@@ -15,4 +15,5 @@ const router = express_1.default.Router();
 router.post('/create-brand', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(brand_validation_1.BrandValidation.create), brand_controller_1.BrandController.insertIntoDB);
 router.get('/', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), brand_controller_1.BrandController.getAllFromDB);
 router.get('/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), brand_controller_1.BrandController.getDataById);
+router.patch('/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), (0, validateRequest_1.default)(brand_validation_1.BrandValidation.update), brand_controller_1.BrandController.updateIntoDB);
 exports.BrandRoutes = router;

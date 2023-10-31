@@ -17,6 +17,13 @@ const inertIntoDB = async (data: Brand): Promise<Brand> => {
   });
   return result;
 };
+const updateIntoDB = async (data: Brand,id:string): Promise<Partial<Brand>> => {
+  const result = prisma.brand.update({
+    where:{id:id},
+    data: data,
+  });
+  return result;
+};
 
 const getAllFromDB = async (
   filters: brandFilterRequest,
@@ -87,4 +94,5 @@ export const BrandService = {
   inertIntoDB,
   getAllFromDB,
   getDataById,
+  updateIntoDB
 };

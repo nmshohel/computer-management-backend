@@ -23,5 +23,10 @@ router.get(
   auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   ModelController.getDataById
 );
-
+router.patch(
+  '/:id',
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
+  validateRequest(ModelValidation.update),
+  ModelController.updateIntoDB
+);
 export const ModelRoutes = router;

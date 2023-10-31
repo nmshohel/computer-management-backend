@@ -24,4 +24,11 @@ router.get(
   BrandController.getDataById
 );
 
+router.patch(
+  '/:id',
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
+  validateRequest(BrandValidation.update),
+  BrandController.updateIntoDB
+);
+
 export const BrandRoutes = router;

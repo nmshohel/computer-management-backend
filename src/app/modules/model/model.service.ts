@@ -17,6 +17,13 @@ const inertIntoDB = async (data: Model): Promise<Model> => {
   });
   return result;
 };
+const updateIntoDB = async (data: Model,id:string): Promise<Partial<Model>> => {
+  const result = prisma.model.update({
+    where:{id:id},
+    data: data,
+  });
+  return result;
+};
 
 const getAllFromDB = async (
   filters: modelFilterRequest,
@@ -90,4 +97,5 @@ export const ModelService = {
   inertIntoDB,
   getAllFromDB,
   getDataById,
+  updateIntoDB
 };

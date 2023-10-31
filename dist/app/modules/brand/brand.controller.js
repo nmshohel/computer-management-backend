@@ -28,6 +28,16 @@ const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const updateIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield brand_service_1.BrandService.updateIntoDB(req.body, id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Brand Updated Successfully',
+        data: result,
+    });
+}));
 const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const filters = (0, pick_1.default)(req.query, brand_constrant_1.brandFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
@@ -54,4 +64,5 @@ exports.BrandController = {
     insertIntoDB,
     getAllFromDB,
     getDataById,
+    updateIntoDB
 };

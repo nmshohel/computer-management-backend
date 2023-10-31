@@ -8,6 +8,12 @@ const create = z.object({
   }),
 });
 
+const update = z.object({
+  body: z.object({
+    brandName: z.string().optional(),
+  }),
+});
+
 export const BrandValidation = {
-  create,
+  create,update
 };

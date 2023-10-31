@@ -11,6 +11,12 @@ const create = z.object({
   }),
 });
 
+
+const update = z.object({
+  body: z.object({
+    modelName: z.string().optional(),
+  }),
+});
 export const ModelValidation = {
-  create,
+  create,update
 };

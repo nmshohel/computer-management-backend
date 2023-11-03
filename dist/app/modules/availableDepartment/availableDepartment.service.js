@@ -25,13 +25,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AvailableDepartmentService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const availableDepartment_constrant_1 = require("./availableDepartment.constrant");
 const inertIntoDB = (data, pbsCode) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     data.pbsCode = pbsCode;
-    // data.zonalCode=zonalCode
-    // console.log(zonalCode,"zonalCode")
+    const availableDepartment = yield prisma_1.default.availableDepartment.findFirst({
+        where: {
+            zonalCode: data === null || data === void 0 ? void 0 : data.zonalCode,
+            departmentId: data === null || data === void 0 ? void 0 : data.departmentId
+        },
+        include: {
+            zonal: true,
+            department: true
+        }
+    });
+    const zonalName = yield ((_a = availableDepartment === null || availableDepartment === void 0 ? void 0 : availableDepartment.zonal) === null || _a === void 0 ? void 0 : _a.zonalName);
+    const departmentName = yield ((_b = availableDepartment === null || availableDepartment === void 0 ? void 0 : availableDepartment.department) === null || _b === void 0 ? void 0 : _b.departmentName);
+    if (availableDepartment) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, `${departmentName} department already exist for ${zonalName}`);
+    }
     const result = prisma_1.default.availableDepartment.create({
         data: data,
         include: {
@@ -45,6 +61,7 @@ const inertIntoDB = (data, pbsCode) => __awaiter(void 0, void 0, void 0, functio
 const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelpers.calculatePagination(options);
     // eslint-disable-next-line no-unused-vars
+    console.log(pbsCode, "----------------");
     const { searchTerm } = filters, filtersData = __rest(filters, ["searchTerm"]);
     const andConditions = [];
     if (searchTerm) {
@@ -73,7 +90,8 @@ const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, vo
         take: limit,
         include: {
             pbs: true,
-            zonal: true
+            zonal: true,
+            department: true
         },
         orderBy: options.sortBy && options.sortOrder
             ? {
@@ -83,7 +101,9 @@ const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, vo
                 createdAt: 'desc',
             },
     });
-    const total = yield prisma_1.default.availableDepartment.count();
+    const total = yield prisma_1.default.availableDepartment.count({
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode }),
+    });
     return {
         meta: {
             total,
@@ -100,7 +120,8 @@ const getDataById = (id) => __awaiter(void 0, void 0, void 0, function* () {
         },
         include: {
             pbs: true,
-            zonal: true
+            zonal: true,
+            department: true
         }
     });
     return result;

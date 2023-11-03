@@ -29,7 +29,7 @@ const getAllFromDB = async (
 ): Promise<IGenericResponse<AvailableDesignation[]>> => {
   const { page, limit, skip } = paginationHelpers.calculatePagination(options);
   // eslint-disable-next-line no-unused-vars
-
+ 
   const { searchTerm, ...filtersData } = filters;
   const andConditions = [];
   if (searchTerm) {
@@ -64,7 +64,9 @@ const getAllFromDB = async (
     take: limit,
     include:{
       pbs:true,
-      zonal:true
+      zonal:true,
+      designation:true,
+      availableDepartment:true
     },
     orderBy:
       options.sortBy && options.sortOrder
@@ -75,7 +77,12 @@ const getAllFromDB = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.availableDesignation.count();
+  const total = await prisma.availableDesignation.count({
+    where: {
+      ...whereCondition,
+      pbsCode: pbsCode,
+    },
+  });
   return {
     meta: {
       total,
@@ -93,7 +100,9 @@ const getDataById = async (id: string): Promise<AvailableDesignation | null> => 
     },
     include:{
       pbs:true,
-      zonal:true
+      zonal:true,
+      designation:true,
+      availableDepartment:true
     },
   });
   return result;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AvailableDesignation } from '@prisma/client';
 import { RequestHandler } from 'express';
@@ -22,7 +23,7 @@ const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getAllFromDB = catchAsync(async (req, res) => {
-  const pbsCode = req.params.pbsCode;
+  const pbsCode=(req as any).user?.pbsCode
   const filters = pick(req.query, availableDesignationFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 

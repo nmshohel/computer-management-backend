@@ -72,7 +72,9 @@ const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, vo
         take: limit,
         include: {
             pbs: true,
-            zonal: true
+            zonal: true,
+            designation: true,
+            availableDepartment: true
         },
         orderBy: options.sortBy && options.sortOrder
             ? {
@@ -82,7 +84,9 @@ const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, vo
                 createdAt: 'desc',
             },
     });
-    const total = yield prisma_1.default.availableDesignation.count();
+    const total = yield prisma_1.default.availableDesignation.count({
+        where: Object.assign(Object.assign({}, whereCondition), { pbsCode: pbsCode }),
+    });
     return {
         meta: {
             total,
@@ -99,7 +103,9 @@ const getDataById = (id) => __awaiter(void 0, void 0, void 0, function* () {
         },
         include: {
             pbs: true,
-            zonal: true
+            zonal: true,
+            designation: true,
+            availableDepartment: true
         },
     });
     return result;

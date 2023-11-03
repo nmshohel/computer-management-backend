@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AvailableDepartment } from '@prisma/client';
 import { RequestHandler } from 'express';
@@ -11,9 +12,10 @@ import { AvailableDepartmentService } from './availableDepartment.service';
 
 
 const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
-  // pbsCode=(req as any)?.user?.pbsCode
-  const pbsCode=req.user?.pbsCode
+  const pbsCode=(req as any)?.user?.pbsCode
+  // const pbsCode=req.user?.pbsCode
   // const zonalCode=req.user?.zonalCode
+  // console.log("------------", req.user)
   const result = await AvailableDepartmentService.inertIntoDB(req.body,pbsCode);
   sendResponse<AvailableDepartment>(res, {
     statusCode: httpStatus.OK,
@@ -24,7 +26,7 @@ const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getAllFromDB = catchAsync(async (req, res) => {
-  const pbsCode = req.params.pbsCode;
+  const pbsCode=(req as any).user?.pbsCode
   const filters = pick(req.query, AvailableDepartmentFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 

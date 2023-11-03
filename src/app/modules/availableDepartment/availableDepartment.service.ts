@@ -2,6 +2,8 @@
 
 
 import { AvailableDepartment, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -14,8 +16,22 @@ import { AvailableDepartmentFilterRequest } from './availableDepartment.interfac
 
 const inertIntoDB = async (data: AvailableDepartment,pbsCode:string): Promise<AvailableDepartment> => {
   data.pbsCode=pbsCode
-  // data.zonalCode=zonalCode
-  // console.log(zonalCode,"zonalCode")
+  const availableDepartment=await prisma.availableDepartment.findFirst({
+    where:{
+      zonalCode:data?.zonalCode,
+      departmentId:data?.departmentId
+    },
+    include:{
+      zonal:true,
+      department:true
+    }
+  })
+  const zonalName=await availableDepartment?.zonal?.zonalName
+  const departmentName=await availableDepartment?.department?.departmentName
+  if(availableDepartment)
+  {
+    throw new ApiError(httpStatus.BAD_REQUEST, `${departmentName} department already exist for ${zonalName}`)
+  }
   const result = prisma.availableDepartment.create({
     data: data,
     include:{
@@ -33,7 +49,7 @@ const getAllFromDB = async (
 ): Promise<IGenericResponse<AvailableDepartment[]>> => {
   const { page, limit, skip } = paginationHelpers.calculatePagination(options);
   // eslint-disable-next-line no-unused-vars
-
+  console.log(pbsCode,"----------------")
   const { searchTerm, ...filtersData } = filters;
   const andConditions = [];
   if (searchTerm) {
@@ -68,7 +84,8 @@ const getAllFromDB = async (
     take: limit,
     include: {
       pbs: true,
-      zonal:true
+      zonal:true,
+      department:true
     },
     orderBy:
       options.sortBy && options.sortOrder
@@ -79,7 +96,12 @@ const getAllFromDB = async (
             createdAt: 'desc',
           },
   });
-  const total = await prisma.availableDepartment.count();
+  const total = await prisma.availableDepartment.count({
+    where: {
+      ...whereCondition,
+      pbsCode: pbsCode,
+    },
+  });
   return {
     meta: {
       total,
@@ -97,7 +119,8 @@ const getDataById = async (id: string): Promise<AvailableDepartment | null> => {
     },
     include:{
       pbs:true,
-      zonal:true
+      zonal:true,
+      department:true
     }
   });
   return result;

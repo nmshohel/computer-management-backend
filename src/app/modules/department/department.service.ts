@@ -8,9 +8,10 @@ import prisma from '../../../shared/prisma';
 import { departmentSearchableFields } from './department.constrant';
 import { departmentFilterRequest } from './department.interface';
 
-const inertIntoDB = async (zonalData: Department): Promise<Department> => {
+const inertIntoDB = async (data: Department): Promise<Department> => {
+  console.log("----------", data)
   const result = prisma.department.create({
-    data: zonalData,
+    data: data,
   });
   return result;
 };

@@ -1,5 +1,7 @@
 import express from 'express';
 import { AuthRoutes } from '../modules/auth/auth.route';
+import { AvailableDepartmentRoutes } from '../modules/availableDepartment/availableDepartment.route';
+import { AvailableDesignationRoutes } from '../modules/availableDesignation/availableDesignation.route';
 import { BrandRoutes } from '../modules/brand/brand.route';
 import { CapitalItemRoutes } from '../modules/capitalitem/capitalitem.route';
 import { CategoryRoutes } from '../modules/category/category.route';
@@ -97,6 +99,14 @@ const moduleRoutes = [
   {
     path: '/servicing',
     route: ServicingRoutes,
+  },
+  {
+    path: '/available-department',
+    route: AvailableDepartmentRoutes,
+  },
+  {
+    path: '/available-designation',
+    route: AvailableDesignationRoutes,
   },
 ];
 

@@ -109,22 +109,38 @@ const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, vo
             survicings: true,
             issueBy: {
                 include: {
-                    employee: true
+                    employee: {
+                        include: {
+                            designation: true
+                        }
+                    }
                 }
             },
             addBy: {
                 include: {
-                    employee: true
+                    employee: {
+                        include: {
+                            designation: true
+                        }
+                    }
                 }
             },
             approveBy: {
                 include: {
-                    employee: true
+                    employee: {
+                        include: {
+                            designation: true
+                        }
+                    }
                 }
             },
             assignTo: {
                 include: {
-                    employee: true
+                    employee: {
+                        include: {
+                            designation: true
+                        }
+                    }
                 }
             },
         },
@@ -428,7 +444,7 @@ const getDataById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getDataByIdentificationNo = (identificationNo) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("identificationNo", identificationNo);
+    // console.log("identificationNo",identificationNo)
     const result = yield prisma_1.default.capitalItem.findUnique({
         where: {
             identificationNo: identificationNo,

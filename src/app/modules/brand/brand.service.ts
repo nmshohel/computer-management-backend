@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Brand, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,11 +11,18 @@ import { brandSearchableFields } from './brand.constrant';
 import { brandFilterRequest } from './brand.interface';
 
 const inertIntoDB = async (data: Brand): Promise<Brand> => {
-  const result = prisma.brand.create({
-    data: data,
-    include:{
-      model:true
+  const brand=await prisma.brand.findFirst({
+    where:{
+      brandName:data.brandName,
+      
     }
+  })
+  if(brand)
+  {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Brand already exist")
+  }
+  const result = prisma.brand.create({
+    data: data
   });
   return result;
 };

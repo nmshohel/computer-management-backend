@@ -49,22 +49,22 @@ router.get(
 );
 router.post(
   '/approve-capital-item/:id',
-  auth(ADMIN, SUPER_ADMIN),
+  auth(ADMIN, SUPER_ADMIN,OFFICE_HEAD),
   CapitalItemController.insertApproveToDB
 );
 router.get(
   '/not-approve/:pbsCode',
-  auth(ADMIN, SUPER_ADMIN),
+  auth(ADMIN, SUPER_ADMIN,OFFICE_HEAD),
   CapitalItemController.getAllNotApproveFromDB
 );
 router.post(
   '/certify-capital-item/:id',
-  auth(ADMIN, SUPER_ADMIN),
+  auth(ADMIN, SUPER_ADMIN,STORE_HEAD),
   CapitalItemController.insertcertifyToDB
 );
 router.get(
   '/not-certify/:pbsCode',
-  auth(ADMIN, SUPER_ADMIN),
+  auth(ADMIN, SUPER_ADMIN,STORE_HEAD),
   CapitalItemController.getAllNotCertifyFromDB
 );
 router.post(

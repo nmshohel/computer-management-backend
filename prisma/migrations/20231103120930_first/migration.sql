@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "ItemCode" AS ENUM ('CPU', 'MNT', 'UPS', 'DVR');
 
+-- CreateEnum
+CREATE TYPE "officeTye" AS ENUM ('hq', 'zonal', 'sub_zoanl');
+
 -- CreateTable
 CREATE TABLE "pbs" (
     "pbsCode" TEXT NOT NULL,
@@ -15,11 +18,45 @@ CREATE TABLE "pbs" (
 CREATE TABLE "zonals" (
     "zonalCode" TEXT NOT NULL,
     "zonalName" TEXT NOT NULL,
+    "zonalType" "officeTye",
     "pbsCode" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "zonals_pkey" PRIMARY KEY ("zonalCode")
+);
+
+-- CreateTable
+CREATE TABLE "AvailableDepartment" (
+    "id" TEXT NOT NULL,
+    "departmentId" TEXT NOT NULL,
+    "zonalCode" TEXT NOT NULL,
+    "pbsCode" TEXT NOT NULL,
+    "laserPrinterType1Nos" TEXT,
+    "laserPrinterType2Nos" TEXT,
+    "laserPrinterLightDutyNos" TEXT,
+    "scannerNos" TEXT,
+    "photoCopyMachingeNos" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "AvailableDepartment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "AvailableDesignation" (
+    "id" TEXT NOT NULL,
+    "designationId" TEXT NOT NULL,
+    "zonalCode" TEXT NOT NULL,
+    "pbsCode" TEXT NOT NULL,
+    "availableDepartmentId" TEXT NOT NULL,
+    "noOfPost" TEXT,
+    "compterNos" TEXT,
+    "dotPrinterNos" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "AvailableDesignation_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -81,7 +118,7 @@ CREATE TABLE "users" (
 CREATE TABLE "employees" (
     "id" TEXT NOT NULL,
     "name" TEXT,
-    "designation" TEXT,
+    "designationId" TEXT,
     "phone" TEXT,
     "address" TEXT,
     "trgId" TEXT,
@@ -255,6 +292,7 @@ CREATE TABLE "servicings" (
     "serviceByMobileNo" TEXT NOT NULL,
     "identificationNo" TEXT NOT NULL,
     "suplierId" TEXT NOT NULL,
+    "pbsCode" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -285,11 +323,29 @@ CREATE UNIQUE INDEX "models_modelName_key" ON "models"("modelName");
 -- CreateIndex
 CREATE UNIQUE INDEX "capital_item_identificationNo_key" ON "capital_item"("identificationNo");
 
--- CreateIndex
-CREATE UNIQUE INDEX "suppliers_name_key" ON "suppliers"("name");
-
 -- AddForeignKey
 ALTER TABLE "zonals" ADD CONSTRAINT "zonals_pbsCode_fkey" FOREIGN KEY ("pbsCode") REFERENCES "pbs"("pbsCode") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AvailableDepartment" ADD CONSTRAINT "AvailableDepartment_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AvailableDepartment" ADD CONSTRAINT "AvailableDepartment_zonalCode_fkey" FOREIGN KEY ("zonalCode") REFERENCES "zonals"("zonalCode") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AvailableDepartment" ADD CONSTRAINT "AvailableDepartment_pbsCode_fkey" FOREIGN KEY ("pbsCode") REFERENCES "pbs"("pbsCode") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AvailableDesignation" ADD CONSTRAINT "AvailableDesignation_designationId_fkey" FOREIGN KEY ("designationId") REFERENCES "designations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AvailableDesignation" ADD CONSTRAINT "AvailableDesignation_zonalCode_fkey" FOREIGN KEY ("zonalCode") REFERENCES "zonals"("zonalCode") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AvailableDesignation" ADD CONSTRAINT "AvailableDesignation_pbsCode_fkey" FOREIGN KEY ("pbsCode") REFERENCES "pbs"("pbsCode") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AvailableDesignation" ADD CONSTRAINT "AvailableDesignation_availableDepartmentId_fkey" FOREIGN KEY ("availableDepartmentId") REFERENCES "AvailableDepartment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "substations" ADD CONSTRAINT "substations_pbsCode_fkey" FOREIGN KEY ("pbsCode") REFERENCES "pbs"("pbsCode") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -326,6 +382,9 @@ ALTER TABLE "users" ADD CONSTRAINT "users_substationCode_fkey" FOREIGN KEY ("sub
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_complainCode_fkey" FOREIGN KEY ("complainCode") REFERENCES "complain_center"("complainCode") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "employees" ADD CONSTRAINT "employees_designationId_fkey" FOREIGN KEY ("designationId") REFERENCES "designations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "employees" ADD CONSTRAINT "employees_mobileNo_fkey" FOREIGN KEY ("mobileNo") REFERENCES "users"("mobileNo") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -452,3 +511,6 @@ ALTER TABLE "servicings" ADD CONSTRAINT "servicings_identificationNo_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "servicings" ADD CONSTRAINT "servicings_suplierId_fkey" FOREIGN KEY ("suplierId") REFERENCES "suppliers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "servicings" ADD CONSTRAINT "servicings_pbsCode_fkey" FOREIGN KEY ("pbsCode") REFERENCES "pbs"("pbsCode") ON DELETE RESTRICT ON UPDATE CASCADE;

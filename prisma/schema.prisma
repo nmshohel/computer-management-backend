@@ -25,24 +25,63 @@ model PBS {
   updatedAt      DateTime         @updatedAt
   servicing      Servicing[]
 
+  availableDesignations AvailableDesignation[]
+  availableDepartments  AvailableDepartment[]
+
   @@map("pbs")
 }
 
 model Zonals {
-  zonalCode      String           @id
-  zonalName      String
-  pbsCode        String
-  pbs            PBS              @relation(fields: [pbsCode], references: [pbsCode])
-  substation     Substation[]
-  complainCenter ComplainCenter[]
-  revenueItem    RevenueItem[]
-  capitalItem    CapitalItem[]
-  user           User[]           @relation("zonal")
-  requseteduser  User[]           @relation("requestedZonal")
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  zonalCode             String                 @id
+  zonalName             String
+  zonalType             officeTye?
+  pbsCode               String
+  pbs                   PBS                    @relation(fields: [pbsCode], references: [pbsCode])
+  substation            Substation[]
+  complainCenter        ComplainCenter[]
+  revenueItem           RevenueItem[]
+  capitalItem           CapitalItem[]
+  user                  User[]                 @relation("zonal")
+  requseteduser         User[]                 @relation("requestedZonal")
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  availableDepartments  AvailableDepartment[]
+  availableDesignations AvailableDesignation[]
 
   @@map("zonals")
+}
+
+model AvailableDepartment {
+  id                    String                 @id @default(uuid())
+  departmentId          String
+  department            Department             @relation(fields: [departmentId], references: [id])
+  zonalCode             String
+  zonal                 Zonals                 @relation(fields: [zonalCode], references: [zonalCode])
+  pbsCode               String
+  pbs                   PBS                    @relation(fields: [pbsCode], references: [pbsCode])
+  laserPrinterNos       String?
+  scannerNos            String?
+  photoCopyMachingeNos  String?
+  availableDesignations AvailableDesignation[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+}
+
+model AvailableDesignation {
+  id                    String              @id @default(uuid())
+  designationId         String
+  designation           Designation         @relation(fields: [designationId], references: [id])
+  zonalCode             String
+  zonal                 Zonals              @relation(fields: [zonalCode], references: [zonalCode])
+  pbsCode               String
+  pbs                   PBS                 @relation(fields: [pbsCode], references: [pbsCode])
+  availableDepartmentId String
+  availableDepartment   AvailableDepartment @relation(fields: [availableDepartmentId], references: [id])
+  noOfPost              String?
+  compterNos            String?
+  dotPrinterNos         String?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
 }
 
 model Substation {
@@ -131,41 +170,45 @@ model User {
 }
 
 model Employee {
-  id                         String   @id @default(uuid())
+  id                         String       @id @default(uuid())
   name                       String?
-  designation                String?
+  designationId              String?
+  designation                Designation? @relation(fields: [designationId], references: [id])
   phone                      String?
   address                    String?
   trgId                      String?
   photoUrl                   String?
   signUrl                    String?
-  mobileNo                   String   @unique
-  user                       User?    @relation(fields: [mobileNo], references: [mobileNo])
-  requestByuser              User[]   @relation("requestBy")
-  zonalTransferRequestByuser User[]   @relation("zonalTransferrequestBy")
-  createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @updatedAt
+  mobileNo                   String       @unique
+  user                       User?        @relation(fields: [mobileNo], references: [mobileNo])
+  requestByuser              User[]       @relation("requestBy")
+  zonalTransferRequestByuser User[]       @relation("zonalTransferrequestBy")
+  createdAt                  DateTime     @default(now())
+  updatedAt                  DateTime     @updatedAt
 
   @@map("employees")
 }
 
 model Department {
-  id             String        @id @default(uuid())
-  departmentName String        @unique
-  designation    Designation[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id                   String                @id @default(uuid())
+  departmentName       String                @unique
+  designation          Designation[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  availableDepartments AvailableDepartment[]
 
   @@map("departments")
 }
 
 model Designation {
-  id              String     @id @default(uuid())
-  designationName String     @unique
-  departmentId    String
-  department      Department @relation(fields: [departmentId], references: [id])
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id                    String                 @id @default(uuid())
+  designationName       String                 @unique
+  departmentId          String
+  department            Department             @relation(fields: [departmentId], references: [id])
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  employees             Employee[]
+  availableDesignations AvailableDesignation[]
 
   @@map("designations")
 }
@@ -343,7 +386,7 @@ model RevenueItem {
 
 model Supplier {
   id          String        @id @default(uuid())
-  name        String        @unique
+  name        String
   address     String
   phone       String
   pbsCode     String
@@ -381,4 +424,10 @@ enum ItemCode {
   MNT
   UPS
   DVR
+}
+
+enum officeTye {
+  hq
+  zonal
+  sub_zoanl
 }

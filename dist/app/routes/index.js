@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const auth_route_1 = require("../modules/auth/auth.route");
+const availableDepartment_route_1 = require("../modules/availableDepartment/availableDepartment.route");
+const availableDesignation_route_1 = require("../modules/availableDesignation/availableDesignation.route");
 const brand_route_1 = require("../modules/brand/brand.route");
 const capitalitem_route_1 = require("../modules/capitalitem/capitalitem.route");
 const category_route_1 = require("../modules/category/category.route");
@@ -100,6 +102,14 @@ const moduleRoutes = [
     {
         path: '/servicing',
         route: servicing_route_1.ServicingRoutes,
+    },
+    {
+        path: '/available-department',
+        route: availableDepartment_route_1.AvailableDepartmentRoutes,
+    },
+    {
+        path: '/available-designation',
+        route: availableDesignation_route_1.AvailableDesignationRoutes,
     },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

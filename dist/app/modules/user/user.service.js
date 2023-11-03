@@ -32,8 +32,9 @@ const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const user_constrant_1 = require("./user.constrant");
-const inertIntoDB = (name, designation, data) => __awaiter(void 0, void 0, void 0, function* () {
+const inertIntoDB = (name, designationId, data) => __awaiter(void 0, void 0, void 0, function* () {
     let result = null;
+    // console.log("data", data)
     yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
         data.password = yield bcrypt_1.default.hash(data.password, Number(config_1.default.bycrypt_salt_rounds));
         result = yield tx.user.create({
@@ -53,7 +54,7 @@ const inertIntoDB = (name, designation, data) => __awaiter(void 0, void 0, void 
             data: {
                 mobileNo: result.mobileNo,
                 name: name,
-                designation: designation,
+                designationId: designationId,
             },
         });
     }));
@@ -93,7 +94,15 @@ const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, vo
             zonals: true,
             complainCenter: true,
             substation: true,
-            employee: true,
+            employee: {
+                include: {
+                    designation: {
+                        include: {
+                            department: true
+                        }
+                    }
+                }
+            },
         },
         orderBy: options.sortBy && options.sortOrder
             ? {

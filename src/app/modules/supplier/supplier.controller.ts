@@ -1,11 +1,12 @@
-import { Supplier } from '@prisma/client';
-import { RequestHandler } from 'express';
-import httpStatus from 'http-status';
-import catchAsync from '../../../shared/catchAsync';
-import pick from '../../../shared/pick';
-import sendResponse from '../../../shared/sendResponse';
-import { supplierFilterableFields } from './supplier.constrant';
-import { SupplierService } from './supplier.service';
+import { Supplier } from "@prisma/client";
+import { RequestHandler } from "express";
+import httpStatus from "http-status";
+import catchAsync from "../../../shared/catchAsync";
+import pick from "../../../shared/pick";
+import sendResponse from "../../../shared/sendResponse";
+import { supplierFilterableFields } from "./supplier.constrant";
+import { SupplierService } from "./supplier.service";
+
 
 const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
   const result = await SupplierService.inertIntoDB(req.body);

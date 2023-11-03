@@ -50,7 +50,7 @@ const loginUser = async (payload: ILoginUser): Promise<IUserLoginResponse> => {
   //     expiresIn: config.jwt.expires_in,
   //   }
   // );
-  console.log("isUserExist",isUserExist)
+  // console.log("isUserExist",isUserExist)
   const isEmployee=await prisma.employee.findUnique({
     where:{
       mobileNo:isUserExist?.mobileNo
@@ -62,11 +62,10 @@ const loginUser = async (payload: ILoginUser): Promise<IUserLoginResponse> => {
   console.log("employeeInfo",isEmployee)
   const { mobileNo, role, pbsCode, zonalCode, complainCode, substationCode } =
     isUserExist;
-  const {name,designation,photoUrl}=isEmployee
+  const {name,photoUrl}=isEmployee
   const userInfo = {
     mobileNo,
     name,
-    designation,
     photoUrl,
     role,
     zonalCode,
@@ -135,7 +134,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     {
       mobileNo: isUserExist.mobileNo,
       name:isEmployee.name,
-      designation:isEmployee.designation,
+
       photoUrl:isEmployee.photoUrl,
       role: isUserExist.role,
       pbsCode: isUserExist.pbsCode,
@@ -185,7 +184,7 @@ const changePassword = async (
     Number(config.bycrypt_salt_rounds)
   );
 
-  const updatePassword = await prisma.user.update({
+  await prisma.user.update({
     where: {
       mobileNo: authUser.mobileNo,
     },

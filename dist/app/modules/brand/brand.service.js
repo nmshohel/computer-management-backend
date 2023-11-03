@@ -25,15 +25,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrandService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const brand_constrant_1 = require("./brand.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = prisma_1.default.brand.create({
-        data: data,
-        include: {
-            model: true
+    const brand = yield prisma_1.default.brand.findFirst({
+        where: {
+            brandName: data.brandName,
         }
+    });
+    if (brand) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Brand already exist");
+    }
+    const result = prisma_1.default.brand.create({
+        data: data
     });
     return result;
 });

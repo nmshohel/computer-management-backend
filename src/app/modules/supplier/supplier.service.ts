@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+
 import { Prisma, Supplier } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,6 +12,15 @@ import { supplierSearchableFields } from './supplier.constrant';
 import { supplierFilterRequest } from './supplier.interface';
 
 const inertIntoDB = async (data: Supplier): Promise<Supplier> => {
+  const supplier=await prisma.supplier.findFirst({
+    where:{
+      name:data?.name,
+      pbsCode:data?.pbsCode
+    }
+  })
+  if(supplier){
+    throw new ApiError(httpStatus.BAD_REQUEST, "Supplier Already Exist")
+  }
   const result = prisma.supplier.create({
     data: data,
     include:{

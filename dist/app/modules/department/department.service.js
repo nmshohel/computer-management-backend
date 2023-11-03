@@ -28,9 +28,10 @@ exports.DepartmentService = void 0;
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const department_constrant_1 = require("./department.constrant");
-const inertIntoDB = (zonalData) => __awaiter(void 0, void 0, void 0, function* () {
+const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("----------", data);
     const result = prisma_1.default.department.create({
-        data: zonalData,
+        data: data,
     });
     return result;
 });

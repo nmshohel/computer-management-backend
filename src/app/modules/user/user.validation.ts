@@ -11,7 +11,7 @@ const create = z.object({
     password: z.string({
       required_error: 'password name is required',
     }),
-    designation: z.string({
+    designationId: z.string({
       required_error: 'designation is required',
     }),
     pbsCode: z.string({

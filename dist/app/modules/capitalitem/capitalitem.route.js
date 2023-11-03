@@ -19,10 +19,10 @@ router.get('/identification-no/:identificationNo', (0, auth_1.default)(ADMIN, SU
 router.patch('/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(capitalitem_validation_1.CapitalItemValidation.update), capitalitem_controller_1.CapitalItemController.updateIntoDB);
 router.post('/assign-capital-item/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(capitalitem_validation_1.CapitalItemValidation.createAssign), capitalitem_controller_1.CapitalItemController.insertAssignToDB);
 router.get('/not-assign/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN), capitalitem_controller_1.CapitalItemController.getAllNotAssignFromDB);
-router.post('/approve-capital-item/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN), capitalitem_controller_1.CapitalItemController.insertApproveToDB);
-router.get('/not-approve/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN), capitalitem_controller_1.CapitalItemController.getAllNotApproveFromDB);
-router.post('/certify-capital-item/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN), capitalitem_controller_1.CapitalItemController.insertcertifyToDB);
-router.get('/not-certify/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN), capitalitem_controller_1.CapitalItemController.getAllNotCertifyFromDB);
+router.post('/approve-capital-item/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD), capitalitem_controller_1.CapitalItemController.insertApproveToDB);
+router.get('/not-approve/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD), capitalitem_controller_1.CapitalItemController.getAllNotApproveFromDB);
+router.post('/certify-capital-item/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN, STORE_HEAD), capitalitem_controller_1.CapitalItemController.insertcertifyToDB);
+router.get('/not-certify/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN, STORE_HEAD), capitalitem_controller_1.CapitalItemController.getAllNotCertifyFromDB);
 router.post('/receive-capital-item/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN), capitalitem_controller_1.CapitalItemController.insertReceiveToDB);
 router.get('/not-receive/:pbsCode', (0, auth_1.default)(ADMIN, SUPER_ADMIN), capitalitem_controller_1.CapitalItemController.getAllNotReceiveFromDB);
 // 01/10/2023------------------------------------------------------------

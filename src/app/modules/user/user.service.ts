@@ -14,11 +14,11 @@ import { userFilterRequest } from './user.interface';
 
 const inertIntoDB = async (
   name: string,
-  designation: string,
+  designationId: string,
   data: User
 ): Promise<User> => {
   let result: User | null = null;
-
+  // console.log("data", data)
   await prisma.$transaction(async tx => {
     data.password = await bcrypt.hash(
       data.password,
@@ -43,7 +43,7 @@ const inertIntoDB = async (
       data: {
         mobileNo: result.mobileNo,
         name: name,
-        designation: designation,
+        designationId: designationId,
       },
     });
   });
@@ -96,7 +96,15 @@ const getAllFromDB = async (
       zonals: true,
       complainCenter: true,
       substation: true,
-      employee: true,
+      employee: {
+        include:{
+          designation:{
+            include:{
+              department:true
+            }
+          }
+        }
+      },
     },
     orderBy:
       options.sortBy && options.sortOrder

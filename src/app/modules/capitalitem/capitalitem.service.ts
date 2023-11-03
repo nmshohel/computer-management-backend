@@ -102,24 +102,41 @@ const getAllFromDB = async (
       subCategory: true,
       supplier: true,
       survicings:true,
+      
       issueBy: {
         include:{
-          employee:true
+          employee:{
+            include:{
+              designation:true
+            }
+          }
         }
       },
       addBy:{
         include:{
-          employee:true
+          employee:{
+            include:{
+              designation:true
+            }
+          }
         }
       },
       approveBy: {
         include:{
-          employee:true
+          employee:{
+            include:{
+              designation:true
+            }
+          }
         }
       },
       assignTo: {
         include:{
-          employee:true
+          employee:{
+            include:{
+              designation:true
+            }
+          }
         }
       },
     },
@@ -501,7 +518,7 @@ const getDataById = async (id: string): Promise<CapitalItem | null> => {
   return result;
 };
 const getDataByIdentificationNo = async (identificationNo: string): Promise<CapitalItem | null> => {
-  console.log("identificationNo",identificationNo)
+  // console.log("identificationNo",identificationNo)
   const result = await prisma.capitalItem.findUnique({
     where: {
       identificationNo: identificationNo,

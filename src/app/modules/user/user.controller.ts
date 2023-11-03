@@ -8,8 +8,9 @@ import { userFilterableFields } from './user.constrant';
 import { UserService } from './user.service';
 
 const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
-  const { name, designation, ...others } = req.body;
-  const result = await UserService.inertIntoDB(name, designation, others);
+  console.log(req.body,"body")
+  const { name, designationId, ...others } = req.body;
+  const result = await UserService.inertIntoDB(name, designationId, others);
   sendResponse<User>(res, {
     statusCode: httpStatus.OK,
     success: true,

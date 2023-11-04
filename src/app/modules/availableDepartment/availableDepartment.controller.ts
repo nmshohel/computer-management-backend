@@ -50,6 +50,17 @@ const getDataById = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const availableAccessories = catchAsync(async (req, res) => {
+ 
+  const result = await AvailableDepartmentService.availableAccessories();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Available Accessories data fatched',
+    data: result,
+  });
+});
 const updateIntoDB = catchAsync(async (req, res) => {
   const { id } = req.params;
   const payload = req.body;
@@ -66,4 +77,5 @@ export const AvailableDepartmentController = {
   getAllFromDB,
   getDataById,
   updateIntoDB,
+  availableAccessories
 };

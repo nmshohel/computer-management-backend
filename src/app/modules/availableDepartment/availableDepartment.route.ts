@@ -20,6 +20,11 @@ router.get(
   AvailableDepartmentController.getAllFromDB
 );
 router.get(
+  '/available-accessories',
+  auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
+  AvailableDepartmentController.availableAccessories
+);
+router.get(
   '/:id',
   auth(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER),
   AvailableDepartmentController.getDataById

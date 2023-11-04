@@ -49,7 +49,7 @@ const getAllFromDB = async (
 ): Promise<IGenericResponse<AvailableDepartment[]>> => {
   const { page, limit, skip } = paginationHelpers.calculatePagination(options);
   // eslint-disable-next-line no-unused-vars
-  console.log(pbsCode,"----------------")
+ 
   const { searchTerm, ...filtersData } = filters;
   const andConditions = [];
   if (searchTerm) {
@@ -126,6 +126,73 @@ const getDataById = async (id: string): Promise<AvailableDepartment | null> => {
   return result;
 };
 
+const availableAccessories = async () => {
+  const allItem=await prisma.capitalItem.findMany({
+    where:{
+      pbsCode:"35",
+      identificationNo:{
+        not:null
+      }
+    },
+    select:{
+      zonalCode:true,
+      identificationNo:true,
+      assignTo:{
+        select:{
+          employee:{
+            select:{
+              designation:{
+                select:{
+                  department:{
+                    select:{
+                      departmentName:true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+  })
+
+  const laserPrintersByZonalCode: { [key: string]: { [key: string]: string }[] } = {};
+  
+  allItem.forEach((item) => {
+    const departmentName: string = item.assignTo!.employee!.designation!.department!.departmentName!;
+    const zonalCode: string = item.zonalCode!;
+    
+    if (item.identificationNo!.slice(6, -3) === "LAP" && departmentName && zonalCode) {
+      // Check if the zonalCode exists in the laserPrintersByZonalCode object
+      if (!laserPrintersByZonalCode[zonalCode]) {
+        laserPrintersByZonalCode[zonalCode] = [];
+      }
+  
+      const existingDepartment = laserPrintersByZonalCode[zonalCode].find((printer) => printer[departmentName] !== undefined);
+  
+      if (existingDepartment) {
+        existingDepartment[departmentName] = String(Number(existingDepartment[departmentName]) + 1);
+      } else {
+        const newDepartment = { [departmentName]: "01" };
+        laserPrintersByZonalCode[zonalCode].push(newDepartment);
+      }
+    }
+  });
+
+  // console.log(laserPrintersByZonalCode);
+  
+
+// console.log(laserPrintersByZonalCode);
+
+return {
+  laserPrinter:laserPrintersByZonalCode
+};
+
+  
+};
+
 const deleteById = async (id: string): Promise<AvailableDepartment | null> => {
   const result = await prisma.availableDepartment.findUnique({
     where: {
@@ -157,4 +224,5 @@ export const AvailableDepartmentService = {
   getDataById,
   deleteById,
   updateIntoDB,
+  availableAccessories
 };

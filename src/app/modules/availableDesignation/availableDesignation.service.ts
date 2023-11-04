@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AvailableDesignation, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -11,7 +13,23 @@ import { availableDesignationFilterRequest } from './availableDesignation.interf
 
 const inertIntoDB = async (data: AvailableDesignation,pbsCode:string): Promise<AvailableDesignation> => {
   data.pbsCode=pbsCode
-  // data.zonalCode=zonalCode
+  const availableDesignation=await prisma.availableDesignation.findFirst({
+    where:{
+      zonalCode:data?.zonalCode,
+      availableDepartmentId:data.availableDepartmentId
+    },
+    include:{
+      zonal:true,
+      availableDepartment:true,
+      designation:true
+    }
+  })
+  const zonalName=await availableDesignation?.zonal?.zonalName
+  const designationName=await availableDesignation?.designation?.designationName
+  if(availableDesignation)
+  {
+    throw new ApiError(httpStatus.BAD_REQUEST, `${designationName} already exist for ${zonalName}`)
+  }
   const result = prisma.availableDesignation.create({
     data: data,
     include:{

@@ -16,6 +16,7 @@ import { isMobileNo } from './user.utils';
 const inertIntoDB = async (
   name: string,
   designationId: string,
+  departmentId:string,
   data: User
 ): Promise<User> => {
 
@@ -76,6 +77,8 @@ const inertIntoDB = async (
         mobileNo: result.mobileNo,
         name: name,
         designationId: designationId,
+        departmentId:departmentId
+        
       },
     });
   });

@@ -31,9 +31,9 @@ const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const user_constrant_1 = require("./user.constrant");
 const user_service_1 = require("./user.service");
 const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body, "body");
-    const _a = req.body, { name, designationId } = _a, others = __rest(_a, ["name", "designationId"]);
-    const result = yield user_service_1.UserService.inertIntoDB(name, designationId, others);
+    // console.log(req.body,"body")
+    const _a = req.body, { name, designationId, departmentId } = _a, others = __rest(_a, ["name", "designationId", "departmentId"]);
+    const result = yield user_service_1.UserService.inertIntoDB(name, designationId, departmentId, others);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

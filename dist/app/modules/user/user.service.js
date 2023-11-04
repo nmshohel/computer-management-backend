@@ -32,7 +32,8 @@ const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const user_constrant_1 = require("./user.constrant");
-const inertIntoDB = (name, designationId, data) => __awaiter(void 0, void 0, void 0, function* () {
+const user_utils_1 = require("./user.utils");
+const inertIntoDB = (name, designationId, departmentId, data) => __awaiter(void 0, void 0, void 0, function* () {
     const Iuser = yield prisma_1.default.user.findFirst({
         where: {
             mobileNo: {
@@ -43,16 +44,10 @@ const inertIntoDB = (name, designationId, data) => __awaiter(void 0, void 0, voi
     if (Iuser) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "User already exists");
     }
-    // check mobile no length-------------------------------------------------
-    const mobileNo = data === null || data === void 0 ? void 0 : data.mobileNo;
-    if (mobileNo) {
-        const mobileNoLength = mobileNo.length;
-        if (mobileNoLength !== 11) {
-            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Provide correct mobile no");
-        }
-    }
-    else {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Mobile No not found");
+    // check mobile no-----------------------------------
+    const mobileNoCheck = (0, user_utils_1.isMobileNo)(data === null || data === void 0 ? void 0 : data.mobileNo);
+    if (!mobileNoCheck) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Please provide correct mobile no");
     }
     // check password-------------------------------------------------
     const userPass = data === null || data === void 0 ? void 0 : data.password;
@@ -88,6 +83,7 @@ const inertIntoDB = (name, designationId, data) => __awaiter(void 0, void 0, voi
                 mobileNo: result.mobileNo,
                 name: name,
                 designationId: designationId,
+                departmentId: departmentId
             },
         });
     }));

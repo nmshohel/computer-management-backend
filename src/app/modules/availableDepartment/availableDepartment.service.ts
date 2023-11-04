@@ -127,88 +127,54 @@ const getDataById = async (id: string): Promise<AvailableDepartment | null> => {
 };
 
 const availableAccessories = async (pbsCode:string) => {
-  const allItem=await prisma.capitalItem.findMany({
-    where:{
-      pbsCode:pbsCode,
-      identificationNo:{
-        not:null
-      }
+  const availableDepartments = await prisma.availableDepartment.findMany({
+    where: {
+      pbsCode: pbsCode,
     },
-    select:{
+    select: {
+      id: true,
+      departmentId: true,
       zonalCode:true,
-      identificationNo:true,
-      assignTo:{
-        select:{
-          employee:{
-            select:{
-              designation:{
-                select:{
-                  department:{
-                    select:{
-                      departmentName:true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      laserPrinterNos:true,
+      scannerNos:true,
+      photoCopyMachingeNos:true
     },
-
-  })
-
-  const scannersByZonalCode: { [key: string]: { [key: string]: string }[] } = {};
-  
-  allItem.forEach((item) => {
-    const departmentName: string = item.assignTo!.employee!.designation!.department!.departmentName!;
-    const zonalCode: string = item.zonalCode!;
-    
-    if (item.identificationNo!.slice(6, -3) === "SCN" && departmentName && zonalCode) {
-      // Check if the zonalCode exists in the laserPrintersByZonalCode object
-      if (!scannersByZonalCode[zonalCode]) {
-        scannersByZonalCode[zonalCode] = [];
-      }
-  
-      const existingDepartment = scannersByZonalCode[zonalCode].find((printer) => printer[departmentName] !== undefined);
-  
-      if (existingDepartment) {
-        existingDepartment[departmentName] = String(Number(existingDepartment[departmentName]) + 1);
-      } else {
-        const newDepartment = { [departmentName]: "01" };
-        scannersByZonalCode[zonalCode].push(newDepartment);
-      }
-    }
   });
-
-
-  //-------------------------------------------------------
-  const laserPrintersByZonalCode: { [key: string]: { [key: string]: string }[] } = {};
   
-  allItem.forEach((item) => {
-    const departmentName: string = item.assignTo!.employee!.designation!.department!.departmentName!;
-    const zonalCode: string = item.zonalCode!;
-    
-    if (item.identificationNo!.slice(6, -3) === "PRN" && departmentName && zonalCode) {
-      // Check if the zonalCode exists in the laserPrintersByZonalCode object
-      if (!laserPrintersByZonalCode[zonalCode]) {
-        laserPrintersByZonalCode[zonalCode] = [];
-      }
+  const results = await Promise.all(availableDepartments.map(async (department) => {
+    const availableScannerCount = await prisma.capitalItem.count({
+      where: {
+        departmentId: department.departmentId,
+        subCategoryid: 'bd8df944-4bea-449b-9811-bc7fc38c64c7',
+      },
+    });
   
-      const existingDepartment = laserPrintersByZonalCode[zonalCode].find((printer) => printer[departmentName] !== undefined);
+    const availableLaserCount = await prisma.capitalItem.count({
+      where: {
+        departmentId: department.departmentId,
+        subCategoryid: '23a8c38f-08d3-4a39-9c4a-3c09b83bc208',
+      },
+    });
   
-      if (existingDepartment) {
-        existingDepartment[departmentName] = String(Number(existingDepartment[departmentName]) + 1);
-      } else {
-        const newDepartment = { [departmentName]: "01" };
-        laserPrintersByZonalCode[zonalCode].push(newDepartment);
-      }
-    }
-  });
-
+    const availablePhotoCopyCount = await prisma.capitalItem.count({
+      where: {
+        departmentId: department.departmentId,
+        subCategoryid: '43b1f688-a465-400b-8058-4c2170fd1072',
+      },
+    });
+  
+    return {
+      ...department,
+      available_scanner: availableScannerCount,
+      available_laser: availableLaserCount,
+      available_photoCopy: availablePhotoCopyCount,
+      
+    };
+  }));
+  
+  
 return {
-  scanner:scannersByZonalCode,
-  laserPrinter:laserPrintersByZonalCode
+  results
 };
 
   

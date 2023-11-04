@@ -14,6 +14,9 @@ const create = z.object({
     designationId: z.string({
       required_error: 'designation is required',
     }),
+    departmentId: z.string({
+      required_error: 'department is required',
+    }),
     pbsCode: z.string({
       required_error: 'pbsCode code is required',
     }),

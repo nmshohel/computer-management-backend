@@ -608,6 +608,15 @@ const insertAssignToDB = (authUser, bodyData, id) => __awaiter(void 0, void 0, v
                 '.' +
                 (maxNumber < 9 ? '0' + (maxNumber + 1) : maxNumber + 1).toString();
     }
+    ///find designation and department
+    const employeeInfo = yield prisma_1.default.employee.findFirst({
+        where: {
+            mobileNo: bodyData.assignTo
+        }
+    });
+    if (!employeeInfo) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Employee not found");
+    }
     const result = prisma_1.default.capitalItem.update({
         where: {
             id: id,
@@ -617,6 +626,8 @@ const insertAssignToDB = (authUser, bodyData, id) => __awaiter(void 0, void 0, v
             issueByMobileNo: authUser.mobileNo,
             zonalCode: bodyData.zonalCode,
             identificationNo: identificationNo,
+            designationId: employeeInfo.designationId,
+            departmentId: employeeInfo.departmentId,
         },
     });
     return result;

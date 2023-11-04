@@ -702,6 +702,16 @@ const insertAssignToDB = async (
       '.' +
       (maxNumber < 9 ? '0' + (maxNumber + 1) : maxNumber + 1).toString();
   }
+  ///find designation and department
+   const employeeInfo=await prisma.employee.findFirst({
+    where:{
+      mobileNo:bodyData.assignTo
+    }
+   })
+   if(!employeeInfo)
+   {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Employee not found")
+   }
 
   const result = prisma.capitalItem.update({
     where: {
@@ -712,6 +722,8 @@ const insertAssignToDB = async (
       issueByMobileNo: authUser.mobileNo,
       zonalCode: bodyData.zonalCode,
       identificationNo: identificationNo,
+      designationId:employeeInfo.designationId,
+      departmentId:employeeInfo.departmentId,
     },
   });
   return result;

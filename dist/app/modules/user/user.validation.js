@@ -16,6 +16,9 @@ const create = zod_1.z.object({
         designationId: zod_1.z.string({
             required_error: 'designation is required',
         }),
+        departmentId: zod_1.z.string({
+            required_error: 'department is required',
+        }),
         pbsCode: zod_1.z.string({
             required_error: 'pbsCode code is required',
         }),

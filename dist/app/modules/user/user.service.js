@@ -33,6 +33,16 @@ const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const user_constrant_1 = require("./user.constrant");
 const inertIntoDB = (name, designationId, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const Iuser = yield prisma_1.default.user.findFirst({
+        where: {
+            mobileNo: {
+                equals: data.mobileNo,
+            },
+        }
+    });
+    if (Iuser) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "User already exists");
+    }
     let result = null;
     // console.log("data", data)
     yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {

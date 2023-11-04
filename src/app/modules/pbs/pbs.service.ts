@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { PBS, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,6 +11,18 @@ import { pbsSearchableFields } from './pbs.constrant';
 import { pbsFilterRequest } from './pbs.interface';
 
 const inertIntoDB = async (pbsData: PBS): Promise<PBS> => {
+  const pbs = await prisma.pBS.findFirst({
+    where: {
+      pbsName: {
+        equals: pbsData.pbsName,
+        mode: 'insensitive',
+      },
+    }
+  });
+  
+  if (pbs) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "PBS already exists");
+  }
   const result = prisma.pBS.create({
     data: pbsData,
   });

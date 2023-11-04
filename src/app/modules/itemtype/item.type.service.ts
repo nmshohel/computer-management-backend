@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ItemType, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,6 +11,18 @@ import { itemTypeSearchableFields } from './item.type.constrant';
 import { itemTypeFilterRequest } from './item.type.interface';
 
 const inertIntoDB = async (itemTypeData: ItemType): Promise<ItemType> => {
+  const itemType = await prisma.itemType.findFirst({
+    where: {
+      itemType: {
+        equals: itemTypeData.itemType,
+        mode: 'insensitive',
+      },
+    }
+  });
+  
+  if (itemType) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "ItemType already exists");
+  }
   const result = prisma.itemType.create({
     data: itemTypeData,
   });

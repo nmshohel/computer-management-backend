@@ -25,10 +25,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ItemTypeService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const item_type_constrant_1 = require("./item.type.constrant");
 const inertIntoDB = (itemTypeData) => __awaiter(void 0, void 0, void 0, function* () {
+    const itemType = yield prisma_1.default.itemType.findFirst({
+        where: {
+            itemType: {
+                equals: itemTypeData.itemType,
+                mode: 'insensitive',
+            },
+        }
+    });
+    if (itemType) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "ItemType already exists");
+    }
     const result = prisma_1.default.itemType.create({
         data: itemTypeData,
     });

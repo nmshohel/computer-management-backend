@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Prisma, Zonals } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,6 +11,18 @@ import { zonalSearchableFields } from './zonal.constrant';
 import { zonalFilterRequest } from './zonal.interface';
 
 const inertIntoDB = async (zonalData: Zonals): Promise<Zonals> => {
+  const zonal = await prisma.zonals.findFirst({
+    where: {
+      zonalName: {
+        equals: zonalData.zonalName,
+        mode: 'insensitive',
+      },
+    }
+  });
+  
+  if (zonal) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Zonal already exists");
+  }
   const result = prisma.zonals.create({
     data: zonalData,
     include:{

@@ -25,10 +25,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ZonalService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const zonal_constrant_1 = require("./zonal.constrant");
 const inertIntoDB = (zonalData) => __awaiter(void 0, void 0, void 0, function* () {
+    const zonal = yield prisma_1.default.zonals.findFirst({
+        where: {
+            zonalName: {
+                equals: zonalData.zonalName,
+                mode: 'insensitive',
+            },
+        }
+    });
+    if (zonal) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Zonal already exists");
+    }
     const result = prisma_1.default.zonals.create({
         data: zonalData,
         include: {

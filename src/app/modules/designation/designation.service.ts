@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Designation, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,6 +11,18 @@ import { designationSearchableFields } from './designation.constrant';
 import { designationFilterRequest } from './designation.interface';
 
 const inertIntoDB = async (data: Designation): Promise<Designation> => {
+  const designation = await prisma.designation.findFirst({
+    where: {
+      designationName: {
+        equals: data.designationName,
+        mode: 'insensitive',
+      },
+    }
+  });
+  
+  if (designation) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Designation already exists");
+  }
   const result = prisma.designation.create({
     data: data,
     include:{

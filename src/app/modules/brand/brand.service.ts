@@ -11,15 +11,17 @@ import { brandSearchableFields } from './brand.constrant';
 import { brandFilterRequest } from './brand.interface';
 
 const inertIntoDB = async (data: Brand): Promise<Brand> => {
-  const brand=await prisma.brand.findFirst({
-    where:{
-      brandName:data.brandName,
-      
+  const brand = await prisma.brand.findFirst({
+    where: {
+      brandName: {
+        equals: data.brandName,
+        mode: 'insensitive',
+      },
     }
-  })
-  if(brand)
-  {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Brand already exist")
+  });
+  
+  if (brand) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Brand already exists");
   }
   const result = prisma.brand.create({
     data: data

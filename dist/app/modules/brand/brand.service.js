@@ -33,11 +33,14 @@ const brand_constrant_1 = require("./brand.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const brand = yield prisma_1.default.brand.findFirst({
         where: {
-            brandName: data.brandName,
+            brandName: {
+                equals: data.brandName,
+                mode: 'insensitive',
+            },
         }
     });
     if (brand) {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Brand already exist");
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Brand already exists");
     }
     const result = prisma_1.default.brand.create({
         data: data

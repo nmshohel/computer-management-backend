@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Model, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,6 +11,18 @@ import { modelSearchableFields } from './model.constrant';
 import { modelFilterRequest } from './model.interface';
 
 const inertIntoDB = async (data: Model): Promise<Model> => {
+  const model = await prisma.model.findFirst({
+    where: {
+      modelName: {
+        equals: data.modelName,
+        mode: 'insensitive',
+      },
+    }
+  });
+  
+  if (model) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Model already exists");
+  }
   const result = prisma.model.create({
     data: data,
     include:{

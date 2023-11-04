@@ -25,10 +25,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DesignationService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const designation_constrant_1 = require("./designation.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const designation = yield prisma_1.default.designation.findFirst({
+        where: {
+            designationName: {
+                equals: data.designationName,
+                mode: 'insensitive',
+            },
+        }
+    });
+    if (designation) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Designation already exists");
+    }
     const result = prisma_1.default.designation.create({
         data: data,
         include: {

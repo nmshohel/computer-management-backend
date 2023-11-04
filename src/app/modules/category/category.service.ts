@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Category, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,6 +11,18 @@ import { categorySearchableFields } from './category.constrant';
 import { categoryFilterRequest } from './category.interface';
 
 const inertIntoDB = async (data: Category): Promise<Category> => {
+  const category = await prisma.category.findFirst({
+    where: {
+      categoryName: {
+        equals: data.categoryName,
+        mode: 'insensitive',
+      },
+    }
+  });
+  
+  if (category) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Category already exists");
+  }
   const result = prisma.category.create({
     data: data,
     include:{

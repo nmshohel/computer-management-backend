@@ -17,6 +17,20 @@ const inertIntoDB = async (
   designationId: string,
   data: User
 ): Promise<User> => {
+
+  const Iuser = await prisma.user.findFirst({
+    where: {
+      mobileNo: {
+        equals: data.mobileNo,
+      },
+    }
+  });
+  
+  if (Iuser) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "User already exists");
+  }
+
+
   let result: User | null = null;
   // console.log("data", data)
   await prisma.$transaction(async tx => {

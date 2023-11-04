@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Department, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,7 +11,18 @@ import { departmentSearchableFields } from './department.constrant';
 import { departmentFilterRequest } from './department.interface';
 
 const inertIntoDB = async (data: Department): Promise<Department> => {
-  console.log("----------", data)
+  const department = await prisma.department.findFirst({
+    where: {
+      departmentName: {
+        equals: data.departmentName,
+        mode: 'insensitive',
+      },
+    }
+  });
+  
+  if (department) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Department already exists");
+  }
   const result = prisma.department.create({
     data: data,
   });

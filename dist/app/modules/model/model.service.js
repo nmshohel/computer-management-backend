@@ -25,10 +25,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ModelService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const model_constrant_1 = require("./model.constrant");
 const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const model = yield prisma_1.default.model.findFirst({
+        where: {
+            modelName: {
+                equals: data.modelName,
+                mode: 'insensitive',
+            },
+        }
+    });
+    if (model) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Model already exists");
+    }
     const result = prisma_1.default.model.create({
         data: data,
         include: {

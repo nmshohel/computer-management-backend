@@ -126,10 +126,10 @@ const getDataById = async (id: string): Promise<AvailableDepartment | null> => {
   return result;
 };
 
-const availableAccessories = async () => {
+const availableAccessories = async (pbsCode:string) => {
   const allItem=await prisma.capitalItem.findMany({
     where:{
-      pbsCode:"35",
+      pbsCode:pbsCode,
       identificationNo:{
         not:null
       }
@@ -158,13 +158,38 @@ const availableAccessories = async () => {
 
   })
 
+  const scannersByZonalCode: { [key: string]: { [key: string]: string }[] } = {};
+  
+  allItem.forEach((item) => {
+    const departmentName: string = item.assignTo!.employee!.designation!.department!.departmentName!;
+    const zonalCode: string = item.zonalCode!;
+    
+    if (item.identificationNo!.slice(6, -3) === "SCN" && departmentName && zonalCode) {
+      // Check if the zonalCode exists in the laserPrintersByZonalCode object
+      if (!scannersByZonalCode[zonalCode]) {
+        scannersByZonalCode[zonalCode] = [];
+      }
+  
+      const existingDepartment = scannersByZonalCode[zonalCode].find((printer) => printer[departmentName] !== undefined);
+  
+      if (existingDepartment) {
+        existingDepartment[departmentName] = String(Number(existingDepartment[departmentName]) + 1);
+      } else {
+        const newDepartment = { [departmentName]: "01" };
+        scannersByZonalCode[zonalCode].push(newDepartment);
+      }
+    }
+  });
+
+
+  //-------------------------------------------------------
   const laserPrintersByZonalCode: { [key: string]: { [key: string]: string }[] } = {};
   
   allItem.forEach((item) => {
     const departmentName: string = item.assignTo!.employee!.designation!.department!.departmentName!;
     const zonalCode: string = item.zonalCode!;
     
-    if (item.identificationNo!.slice(6, -3) === "LAP" && departmentName && zonalCode) {
+    if (item.identificationNo!.slice(6, -3) === "PRN" && departmentName && zonalCode) {
       // Check if the zonalCode exists in the laserPrintersByZonalCode object
       if (!laserPrintersByZonalCode[zonalCode]) {
         laserPrintersByZonalCode[zonalCode] = [];
@@ -181,12 +206,8 @@ const availableAccessories = async () => {
     }
   });
 
-  // console.log(laserPrintersByZonalCode);
-  
-
-// console.log(laserPrintersByZonalCode);
-
 return {
+  scanner:scannersByZonalCode,
   laserPrinter:laserPrintersByZonalCode
 };
 

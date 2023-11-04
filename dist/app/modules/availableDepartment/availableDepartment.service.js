@@ -61,7 +61,6 @@ const inertIntoDB = (data, pbsCode) => __awaiter(void 0, void 0, void 0, functio
 const getAllFromDB = (filters, options, pbsCode) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelpers.calculatePagination(options);
     // eslint-disable-next-line no-unused-vars
-    console.log(pbsCode, "----------------");
     const { searchTerm } = filters, filtersData = __rest(filters, ["searchTerm"]);
     const andConditions = [];
     if (searchTerm) {
@@ -126,6 +125,80 @@ const getDataById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const availableAccessories = (pbsCode) => __awaiter(void 0, void 0, void 0, function* () {
+    const allItem = yield prisma_1.default.capitalItem.findMany({
+        where: {
+            pbsCode: pbsCode,
+            identificationNo: {
+                not: null
+            }
+        },
+        select: {
+            zonalCode: true,
+            identificationNo: true,
+            assignTo: {
+                select: {
+                    employee: {
+                        select: {
+                            designation: {
+                                select: {
+                                    department: {
+                                        select: {
+                                            departmentName: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    });
+    const scannersByZonalCode = {};
+    allItem.forEach((item) => {
+        const departmentName = item.assignTo.employee.designation.department.departmentName;
+        const zonalCode = item.zonalCode;
+        if (item.identificationNo.slice(6, -3) === "SCN" && departmentName && zonalCode) {
+            // Check if the zonalCode exists in the laserPrintersByZonalCode object
+            if (!scannersByZonalCode[zonalCode]) {
+                scannersByZonalCode[zonalCode] = [];
+            }
+            const existingDepartment = scannersByZonalCode[zonalCode].find((printer) => printer[departmentName] !== undefined);
+            if (existingDepartment) {
+                existingDepartment[departmentName] = String(Number(existingDepartment[departmentName]) + 1);
+            }
+            else {
+                const newDepartment = { [departmentName]: "01" };
+                scannersByZonalCode[zonalCode].push(newDepartment);
+            }
+        }
+    });
+    //-------------------------------------------------------
+    const laserPrintersByZonalCode = {};
+    allItem.forEach((item) => {
+        const departmentName = item.assignTo.employee.designation.department.departmentName;
+        const zonalCode = item.zonalCode;
+        if (item.identificationNo.slice(6, -3) === "PRN" && departmentName && zonalCode) {
+            // Check if the zonalCode exists in the laserPrintersByZonalCode object
+            if (!laserPrintersByZonalCode[zonalCode]) {
+                laserPrintersByZonalCode[zonalCode] = [];
+            }
+            const existingDepartment = laserPrintersByZonalCode[zonalCode].find((printer) => printer[departmentName] !== undefined);
+            if (existingDepartment) {
+                existingDepartment[departmentName] = String(Number(existingDepartment[departmentName]) + 1);
+            }
+            else {
+                const newDepartment = { [departmentName]: "01" };
+                laserPrintersByZonalCode[zonalCode].push(newDepartment);
+            }
+        }
+    });
+    return {
+        scanner: scannersByZonalCode,
+        laserPrinter: laserPrintersByZonalCode
+    };
+});
 const deleteById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.availableDepartment.findUnique({
         where: {
@@ -154,4 +227,5 @@ exports.AvailableDepartmentService = {
     getDataById,
     deleteById,
     updateIntoDB,
+    availableAccessories
 };

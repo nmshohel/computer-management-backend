@@ -52,13 +52,13 @@ const getDataById = catchAsync(async (req, res) => {
 });
 
 const availableAccessories = catchAsync(async (req, res) => {
- 
-  const result = await AvailableDepartmentService.availableAccessories();
+  const pbsCode=(req as any).user?.pbsCode
+  const result = await AvailableDepartmentService.availableAccessories(pbsCode);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Available Accessories data fatched',
-    data: result,
+    data:result
   });
 });
 const updateIntoDB = catchAsync(async (req, res) => {

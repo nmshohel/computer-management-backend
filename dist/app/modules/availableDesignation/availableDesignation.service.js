@@ -25,12 +25,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AvailableDesignationService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const availableDesignation_constrant_1 = require("./availableDesignation.constrant");
 const inertIntoDB = (data, pbsCode) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     data.pbsCode = pbsCode;
-    // data.zonalCode=zonalCode
+    const availableDesignation = yield prisma_1.default.availableDesignation.findFirst({
+        where: {
+            zonalCode: data === null || data === void 0 ? void 0 : data.zonalCode,
+            availableDepartmentId: data.availableDepartmentId
+        },
+        include: {
+            zonal: true,
+            availableDepartment: true,
+            designation: true
+        }
+    });
+    const zonalName = yield ((_a = availableDesignation === null || availableDesignation === void 0 ? void 0 : availableDesignation.zonal) === null || _a === void 0 ? void 0 : _a.zonalName);
+    const designationName = yield ((_b = availableDesignation === null || availableDesignation === void 0 ? void 0 : availableDesignation.designation) === null || _b === void 0 ? void 0 : _b.designationName);
+    if (availableDesignation) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, `${designationName} already exist for ${zonalName}`);
+    }
     const result = prisma_1.default.availableDesignation.create({
         data: data,
         include: {

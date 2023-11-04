@@ -14,6 +14,7 @@ const { ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER } = user_1.E
 const router = express_1.default.Router();
 router.post('/', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(availableDepartment_validation_1.AvailableDepartmentValidation.create), availableDepartment_controller_1.AvailableDepartmentController.insertIntoDB);
 router.get('/', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), availableDepartment_controller_1.AvailableDepartmentController.getAllFromDB);
+router.get('/available-accessories', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), availableDepartment_controller_1.AvailableDepartmentController.availableAccessories);
 router.get('/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN, OFFICE_HEAD, STORE_HEAD, INCHARGE, USER), availableDepartment_controller_1.AvailableDepartmentController.getDataById);
 router.patch('/:id', (0, auth_1.default)(ADMIN, SUPER_ADMIN), (0, validateRequest_1.default)(availableDepartment_validation_1.AvailableDepartmentValidation.update), availableDepartment_controller_1.AvailableDepartmentController.updateIntoDB);
 exports.AvailableDepartmentRoutes = router;

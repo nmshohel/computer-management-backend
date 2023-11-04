@@ -58,6 +58,17 @@ const getDataById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: result,
     });
 }));
+const availableAccessories = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    const pbsCode = (_c = req.user) === null || _c === void 0 ? void 0 : _c.pbsCode;
+    const result = yield availableDepartment_service_1.AvailableDepartmentService.availableAccessories(pbsCode);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Available Accessories data fatched',
+        data: result
+    });
+}));
 const updateIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const payload = req.body;
@@ -74,4 +85,5 @@ exports.AvailableDepartmentController = {
     getAllFromDB,
     getDataById,
     updateIntoDB,
+    availableAccessories
 };

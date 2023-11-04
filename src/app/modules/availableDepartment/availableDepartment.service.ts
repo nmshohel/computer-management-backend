@@ -127,54 +127,40 @@ const getDataById = async (id: string): Promise<AvailableDepartment | null> => {
 };
 
 const availableAccessories = async (pbsCode:string) => {
-  const availableDepartments = await prisma.availableDepartment.findMany({
-    where: {
-      pbsCode: pbsCode,
-    },
-    select: {
-      id: true,
-      departmentId: true,
-      zonalCode:true,
-      laserPrinterNos:true,
-      scannerNos:true,
-      photoCopyMachingeNos:true
-    },
-  });
-  
-  const results = await Promise.all(availableDepartments.map(async (department) => {
-    const availableScannerCount = await prisma.capitalItem.count({
-      where: {
-        departmentId: department.departmentId,
-        subCategoryid: 'bd8df944-4bea-449b-9811-bc7fc38c64c7',
-      },
-    });
-  
-    const availableLaserCount = await prisma.capitalItem.count({
-      where: {
-        departmentId: department.departmentId,
-        subCategoryid: '23a8c38f-08d3-4a39-9c4a-3c09b83bc208',
-      },
-    });
-  
-    const availablePhotoCopyCount = await prisma.capitalItem.count({
-      where: {
-        departmentId: department.departmentId,
-        subCategoryid: '43b1f688-a465-400b-8058-4c2170fd1072',
-      },
-    });
-  
-    return {
-      ...department,
-      available_scanner: availableScannerCount,
-      available_laser: availableLaserCount,
-      available_photoCopy: availablePhotoCopyCount,
-      
-    };
-  }));
-  
-  
+
+  const result = await prisma.$queryRaw`
+  SELECT
+    AD.*, D.*, Z.*,
+    (
+      SELECT COUNT(CI."departmentId")
+      FROM capital_item CI
+      WHERE
+        AD."departmentId" = CI."departmentId"
+        AND CI."subCategoryid" = 'bd8df944-4bea-449b-9811-bc7fc38c64c7'
+    )::text as available_scanner,
+    (
+      SELECT COUNT(CI."departmentId")
+      FROM capital_item CI
+      WHERE
+        AD."departmentId" = CI."departmentId"
+        AND CI."subCategoryid" = '23a8c38f-08d3-4a39-9c4a-3c09b83bc208'
+    )::text as available_laser,
+    (
+      SELECT COUNT(CI."departmentId")
+      FROM capital_item CI
+      WHERE
+        AD."departmentId" = CI."departmentId"
+        AND CI."subCategoryid" = '43b1f688-a465-400b-8058-4c2170fd1072'
+    )::text as available_photoCopy
+  FROM "AvailableDepartment" AD
+  INNER JOIN "departments" D ON AD."departmentId" = D."id"
+  INNER JOIN "zonals" Z ON AD."zonalCode" = Z."zonalCode"
+  WHERE AD."pbsCode" = ${pbsCode}
+  ORDER BY AD."zonalCode", D."departmentName"`;
+
+
 return {
-  results
+  result
 };
 
   

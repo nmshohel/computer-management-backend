@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Prisma, Servicing } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -8,6 +10,15 @@ import prisma from '../../../shared/prisma';
 import { survicingSearchableFields } from './servicing.constrant';
 import { survicingFilterRequest } from './servicing.interface';
 const inertIntoDB = async (data: Servicing,pbsCode:string): Promise<Servicing> => {
+  const servicing = await prisma.servicing.findFirst({
+    where:{
+    ...data
+    }
+  });
+  
+  if (servicing) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "servicing already exists");
+  }
   data.pbsCode=pbsCode
   const result = prisma.servicing.create({
     data: data,

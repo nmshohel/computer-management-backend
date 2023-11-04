@@ -16,6 +16,15 @@ const inertIntoDB = async (
 ): Promise<RevenueItem> => {
   data.pbsCode = authUser.pbsCode;
   data.addByMobileNo = authUser.mobileNo;
+  const revenueItem = await prisma.revenueItem.findFirst({
+    where:{
+    ...data
+    }
+  });
+  
+  if (revenueItem) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "revenue item already exists");
+  }
   const result = prisma.revenueItem.create({
     data: data,
   });

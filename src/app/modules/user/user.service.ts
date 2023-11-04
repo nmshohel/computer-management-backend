@@ -11,6 +11,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 import { userSearchableFields } from './user.constrant';
 import { userFilterRequest } from './user.interface';
+import { isMobileNo } from './user.utils';
 
 const inertIntoDB = async (
   name: string,
@@ -29,8 +30,25 @@ const inertIntoDB = async (
   if (Iuser) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User already exists");
   }
-
-
+// check mobile no-----------------------------------
+   const mobileNoCheck=isMobileNo(data?.mobileNo)
+   if(!mobileNoCheck)
+   {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Please provide correct mobile no")
+   }
+  // check password-------------------------------------------------
+  const userPass = data?.password;
+   
+  if (userPass) {
+    const userPassLength = userPass.length;
+    if(userPassLength <6)
+    {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Provide minimum six digit password")
+    }
+  } else {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Passwrod not found")
+  }
+// main function
   let result: User | null = null;
   // console.log("data", data)
   await prisma.$transaction(async tx => {

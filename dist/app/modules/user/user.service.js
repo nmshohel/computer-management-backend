@@ -43,6 +43,29 @@ const inertIntoDB = (name, designationId, data) => __awaiter(void 0, void 0, voi
     if (Iuser) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "User already exists");
     }
+    // check mobile no length-------------------------------------------------
+    const mobileNo = data === null || data === void 0 ? void 0 : data.mobileNo;
+    if (mobileNo) {
+        const mobileNoLength = mobileNo.length;
+        if (mobileNoLength !== 11) {
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Provide correct mobile no");
+        }
+    }
+    else {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Mobile No not found");
+    }
+    // check password-------------------------------------------------
+    const userPass = data === null || data === void 0 ? void 0 : data.password;
+    if (userPass) {
+        const userPassLength = userPass.length;
+        if (userPassLength < 6) {
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Provide minimum six digit password");
+        }
+    }
+    else {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Passwrod not found");
+    }
+    // main function
     let result = null;
     // console.log("data", data)
     yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {

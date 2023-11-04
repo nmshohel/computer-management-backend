@@ -33,6 +33,12 @@ const revenueitem_constrant_1 = require("./revenueitem.constrant");
 const inertIntoDB = (data, authUser) => __awaiter(void 0, void 0, void 0, function* () {
     data.pbsCode = authUser.pbsCode;
     data.addByMobileNo = authUser.mobileNo;
+    const revenueItem = yield prisma_1.default.revenueItem.findFirst({
+        where: Object.assign({}, data)
+    });
+    if (revenueItem) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "revenue item already exists");
+    }
     const result = prisma_1.default.revenueItem.create({
         data: data,
     });

@@ -25,10 +25,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServicingService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const servicing_constrant_1 = require("./servicing.constrant");
 const inertIntoDB = (data, pbsCode) => __awaiter(void 0, void 0, void 0, function* () {
+    const servicing = yield prisma_1.default.servicing.findFirst({
+        where: Object.assign({}, data)
+    });
+    if (servicing) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "servicing already exists");
+    }
     data.pbsCode = pbsCode;
     const result = prisma_1.default.servicing.create({
         data: data,

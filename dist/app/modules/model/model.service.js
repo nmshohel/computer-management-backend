@@ -37,6 +37,7 @@ const inertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 equals: data.modelName,
                 mode: 'insensitive',
             },
+            brandId: data.brandId
         }
     });
     if (model) {

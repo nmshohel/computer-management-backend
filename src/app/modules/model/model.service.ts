@@ -17,6 +17,8 @@ const inertIntoDB = async (data: Model): Promise<Model> => {
         equals: data.modelName,
         mode: 'insensitive',
       },
+      brandId:data.brandId
+
     }
   });
   

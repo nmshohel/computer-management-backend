@@ -22,6 +22,7 @@ const config_1 = __importDefault(require("../../../config"));
 const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { mobileNo: userMobileNo, password } = payload;
     // creating user instance of User
     const isUserExist = yield prisma_1.default.user.findUnique({
@@ -37,27 +38,18 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     if (isUserExist.password && !isPasswordMatched) {
         throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'Password is incorrect');
     }
-    // create access token and refress token
-    // const accessToken = jwt.sign(
-    //   {
-    //     id: isUserExist?.id,
-    //     role: isUserExist?.role,
-    //   },
-    //   config.jwt.secret as Secret,
-    //   {
-    //     expiresIn: config.jwt.expires_in,
-    //   }
-    // );
-    // console.log("isUserExist",isUserExist)
     const isEmployee = yield prisma_1.default.employee.findUnique({
         where: {
             mobileNo: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.mobileNo
+        },
+        include: {
+            designation: true
         }
     });
     if (!isEmployee) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Employee information not found");
     }
-    console.log("employeeInfo", isEmployee);
+    const designation = (_a = isEmployee === null || isEmployee === void 0 ? void 0 : isEmployee.designation) === null || _a === void 0 ? void 0 : _a.designationName;
     const { mobileNo, role, pbsCode, zonalCode, complainCode, substationCode } = isUserExist;
     const { name, photoUrl } = isEmployee;
     const userInfo = {
@@ -65,6 +57,7 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         name,
         photoUrl,
         role,
+        designation,
         zonalCode,
         complainCode,
         substationCode,
@@ -88,6 +81,7 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
     let verifyToken = null;
     try {
         verifyToken = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.refresh_secret);
@@ -108,15 +102,20 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     const isEmployee = yield prisma_1.default.employee.findUnique({
         where: {
             mobileNo: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.mobileNo
+        },
+        include: {
+            designation: true
         }
     });
     if (!isEmployee) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Employee information not found");
     }
+    const designation = (_b = isEmployee === null || isEmployee === void 0 ? void 0 : isEmployee.designation) === null || _b === void 0 ? void 0 : _b.designationName;
     // genereate token
     const newAccessToken = jwtHelpers_1.jwtHelpers.createToken({
         mobileNo: isUserExist.mobileNo,
         name: isEmployee.name,
+        designation: designation,
         photoUrl: isEmployee.photoUrl,
         role: isUserExist.role,
         pbsCode: isUserExist.pbsCode,

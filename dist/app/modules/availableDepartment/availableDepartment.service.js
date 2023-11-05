@@ -126,42 +126,37 @@ const getDataById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const availableAccessories = (pbsCode) => __awaiter(void 0, void 0, void 0, function* () {
-    const availableDepartments = yield prisma_1.default.availableDepartment.findMany({
-        where: {
-            pbsCode: pbsCode,
-        },
-        select: {
-            id: true,
-            departmentId: true,
-            zonalCode: true,
-            laserPrinterNos: true,
-            scannerNos: true,
-            photoCopyMachingeNos: true
-        },
-    });
-    const results = yield Promise.all(availableDepartments.map((department) => __awaiter(void 0, void 0, void 0, function* () {
-        const availableScannerCount = yield prisma_1.default.capitalItem.count({
-            where: {
-                departmentId: department.departmentId,
-                subCategoryid: 'bd8df944-4bea-449b-9811-bc7fc38c64c7',
-            },
-        });
-        const availableLaserCount = yield prisma_1.default.capitalItem.count({
-            where: {
-                departmentId: department.departmentId,
-                subCategoryid: '23a8c38f-08d3-4a39-9c4a-3c09b83bc208',
-            },
-        });
-        const availablePhotoCopyCount = yield prisma_1.default.capitalItem.count({
-            where: {
-                departmentId: department.departmentId,
-                subCategoryid: '43b1f688-a465-400b-8058-4c2170fd1072',
-            },
-        });
-        return Object.assign(Object.assign({}, department), { available_scanner: availableScannerCount, available_laser: availableLaserCount, available_photoCopy: availablePhotoCopyCount });
-    })));
+    const result = yield prisma_1.default.$queryRaw `
+  SELECT
+    AD.*, D.*, Z.*,
+    (
+      SELECT COUNT(CI."departmentId")
+      FROM capital_item CI
+      WHERE
+        AD."departmentId" = CI."departmentId"
+        AND CI."subCategoryid" = 'bd8df944-4bea-449b-9811-bc7fc38c64c7'
+    )::text as available_scanner,
+    (
+      SELECT COUNT(CI."departmentId")
+      FROM capital_item CI
+      WHERE
+        AD."departmentId" = CI."departmentId"
+        AND CI."subCategoryid" = '23a8c38f-08d3-4a39-9c4a-3c09b83bc208'
+    )::text as available_laser,
+    (
+      SELECT COUNT(CI."departmentId")
+      FROM capital_item CI
+      WHERE
+        AD."departmentId" = CI."departmentId"
+        AND CI."subCategoryid" = '43b1f688-a465-400b-8058-4c2170fd1072'
+    )::text as available_photoCopy
+  FROM "AvailableDepartment" AD
+  INNER JOIN "departments" D ON AD."departmentId" = D."id"
+  INNER JOIN "zonals" Z ON AD."zonalCode" = Z."zonalCode"
+  WHERE AD."pbsCode" = ${pbsCode}
+  ORDER BY AD."zonalCode", D."departmentName"`;
     return {
-        results
+        result
     };
 });
 const deleteById = (id) => __awaiter(void 0, void 0, void 0, function* () {

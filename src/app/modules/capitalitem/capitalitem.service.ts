@@ -533,7 +533,10 @@ const getDataByIdentificationNo = async (identificationNo: string): Promise<Capi
       itemType: true,
       category: true,
       subCategory: true,
+      department:true,
+      designation:true,
       supplier: true,
+      
       survicings:{
         include:{
           serviceByuser:true,

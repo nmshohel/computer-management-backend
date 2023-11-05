@@ -39,27 +39,20 @@ const loginUser = async (payload: ILoginUser): Promise<IUserLoginResponse> => {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect');
   }
 
-  // create access token and refress token
-  // const accessToken = jwt.sign(
-  //   {
-  //     id: isUserExist?.id,
-  //     role: isUserExist?.role,
-  //   },
-  //   config.jwt.secret as Secret,
-  //   {
-  //     expiresIn: config.jwt.expires_in,
-  //   }
-  // );
-  // console.log("isUserExist",isUserExist)
+
   const isEmployee=await prisma.employee.findUnique({
     where:{
       mobileNo:isUserExist?.mobileNo
+    },
+    include:{
+      designation:true
     }
   })
   if(!isEmployee){
     throw new ApiError(httpStatus.BAD_REQUEST, "Employee information not found")
   }
-  console.log("employeeInfo",isEmployee)
+
+  const designation=isEmployee?.designation?.designationName
   const { mobileNo, role, pbsCode, zonalCode, complainCode, substationCode } =
     isUserExist;
   const {name,photoUrl}=isEmployee
@@ -68,6 +61,7 @@ const loginUser = async (payload: ILoginUser): Promise<IUserLoginResponse> => {
     name,
     photoUrl,
     role,
+    designation,
     zonalCode,
     complainCode,
     substationCode,
@@ -124,17 +118,22 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   const isEmployee=await prisma.employee.findUnique({
     where:{
       mobileNo:isUserExist?.mobileNo
+    },
+    include:{
+      designation:true
     }
   })
   if(!isEmployee){
     throw new ApiError(httpStatus.BAD_REQUEST, "Employee information not found")
   }
+
+  const designation=isEmployee?.designation?.designationName
   // genereate token
   const newAccessToken = jwtHelpers.createToken(
     {
       mobileNo: isUserExist.mobileNo,
       name:isEmployee.name,
-
+      designation:designation,
       photoUrl:isEmployee.photoUrl,
       role: isUserExist.role,
       pbsCode: isUserExist.pbsCode,

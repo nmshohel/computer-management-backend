@@ -127,7 +127,6 @@ const getDataById = async (id: string): Promise<AvailableDepartment | null> => {
 };
 
 const availableAccessories = async (pbsCode:string) => {
-
   const result = await prisma.$queryRaw`
   SELECT
     AD.*, D.*, Z.*,
@@ -157,7 +156,6 @@ const availableAccessories = async (pbsCode:string) => {
   INNER JOIN "zonals" Z ON AD."zonalCode" = Z."zonalCode"
   WHERE AD."pbsCode" = ${pbsCode}
   ORDER BY AD."zonalCode", D."departmentName"`;
-
 
 return {
   result
